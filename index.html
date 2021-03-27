@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Learn Kana</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+  <script src="jquery.js" type="text/javascript"></script>
+  <script src="script.js" type="text/javascript"></script>
+  <div class="main">
+    <div id="question" class="unselectable"></div>
+
+    <button style="left: 25%;" id="answer1" class="unselectable medium-circle-button" onclick="answer(1);"></button>
+    <button style="left: 50%;" id="answer2" class="unselectable medium-circle-button" onclick="answer(2);"></button>
+    <button style="left: 75%;" id="answer3" class="unselectable medium-circle-button" onclick="answer(3);"></button>
+
+    <div id="container">
+      <div id="progress" class="unselectable"></div>
+    </div>
+  </div>
+</body>
+
+</html>
