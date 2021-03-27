@@ -136,6 +136,7 @@ async function answer(number) {
   }
 
   setCookie("learned", learned.toString(), 30);
+  setCookie("learning", JSON.stringify(learning), 30);
 }
 
 function reset() {
@@ -240,6 +241,14 @@ $(document).ready(function() {
     learned = saved_learned.split(",");
     for(var i = 0; i < learned.length; i++) {
       removeItem(unlearned, learned[i]);
+    }
+  }
+
+  var saved_learning = getCookie("learning");
+  if (saved_learning != "") {
+    learning = JSON.parse(saved_learning);
+    for(var i = 0; i < Object.keys(learning).length; i++) {
+      removeItem(unlearned, Object.keys(learning)[i]);
     }
   }
 
