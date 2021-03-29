@@ -73,7 +73,7 @@ function loadProgress() {
     }
   }
 
-  var width_percent = learned.length / Object.keys(romaji_kana).length * 100;
+  var width_percent = learned.length / Object.keys(kana_romaji).length * 100;
 
   $("#progress").css("width", width_percent + "%");
 }
