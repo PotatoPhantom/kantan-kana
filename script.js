@@ -152,17 +152,20 @@ function reset() {
   $("#question").css("transform", "translate(-50%,-50%)");
 
   var new_question = unlearned[0];
-  if (Math.random() <= (0.2 * Object.keys(learning).length)) {
+
+  if (Object.keys(learning).length > 0 && Math.random() <= (0.2 * Object.keys(learning).length)) {
     new_question = randomKey(learning);
   }
   if (learned.length > 0 && Math.random() <= (learned.length * 0.25 / Object.keys(kana_romaji).length)) {
     new_question = learned[Math.floor(Math.random() * learned.length)];
   }
   while (new_question === $("#question").text()) {
-    if (Object.keys(learning).length < 5 && Math.random() <= 0.5) {
+    if (unlearned.length > 0 Object.keys(learning).length < 5 && Math.random() <= 0.5) {
       new_question = unlearned[0];
-    } else {
+    } else if (Object.keys(learning).length > 0){
       new_question = randomKey(learning);
+    } else {
+      new_question = learned[Math.floor(Math.random() * learned.length)];
     }
   }
   $("#question").text(new_question);
