@@ -159,7 +159,7 @@ function reset() {
   if (learned.length > 0 && Math.random() <= (learned.length * 0.25 / Object.keys(kana_romaji).length)) {
     new_question = learned[Math.floor(Math.random() * learned.length)];
   }
-  while (new_question === $("#question").text()) {
+  while (new_question === $("#question").text() || new_question === undefined) {
     if (unlearned.length > 0 && Object.keys(learning).length < 5 && Math.random() <= 0.5) {
       new_question = unlearned[0];
     } else if (Object.keys(learning).length > 0){
