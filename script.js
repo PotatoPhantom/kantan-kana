@@ -26,6 +26,9 @@ function setRootValue(rkey, rvalue) {
 }
 
 function setTheme(theme_name) {
+  if (theme_name == "") {
+    theme_name = Object.keys(themes)[0];
+  }
   css_text = themes[theme_name];
   if (css_text !== undefined) {
     css_values = css_text.split(";")
@@ -38,11 +41,50 @@ function setTheme(theme_name) {
   }
 
   setCookie("theme", theme_name, 365);
+  $("#themeList").val(theme_name);
 
   loadProgress();
   $("#question").text("");
   reset();
   loadingScreen();
+}
+
+function setEnglishFont(font_name) {
+  if (font_name == "") {
+    font_name = 'arial';
+  }
+  setRootValue("--english-font", font_name + ", sans-serif");
+  setCookie("en_font", font_name, 365);
+  $("#englishFontList").val(font_name);
+}
+
+function setEnglishFontSize(size_unknown) {
+  var size = Math.round(size_unknown);
+  if (size == 0) {
+    size = 72;
+  }
+  setRootValue("--english-size", size + "px");
+  setCookie("en_font_size", "" + size, 365);
+  $("#englishSize").val(size);
+}
+
+function setJapaneseFont(font_name) {
+  if (font_name == "") {
+    font_name = 'arial';
+  }
+  setRootValue("--japanese-font", font_name + ", sans-serif");
+  setCookie("jp_font", font_name, 365);
+  $("#japaneseFontList").val(font_name);
+}
+
+function setJapaneseFontSize(size_unknown) {
+  var size = Math.round(size_unknown);
+  if (size == 0) {
+    size = 144;
+  }
+  setRootValue("--japanese-size", size + "px");
+  setCookie("jp_font_size", "" + size, 365);
+  $("#japaneseSize").val(size);
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -314,6 +356,22 @@ $(document).ready(function() {
      setTheme(this.value);
      return false;
   };
+  document.getElementById("englishFontList").onchange = function() {
+     setEnglishFont(this.value);
+     return false;
+  };
+  document.getElementById("englishSize").oninput = function() {
+     setEnglishFontSize(this.value);
+     return false;
+  };
+  document.getElementById("japaneseFontList").onchange = function() {
+     setJapaneseFont(this.value);
+     return false;
+  };
+  document.getElementById("japaneseSize").oninput = function() {
+     setJapaneseFontSize(this.value);
+     return false;
+  };
 
   loadingScreen();
 });
@@ -337,4 +395,8 @@ $.get("themes.txt", function(text) {
     }
   }
   setTheme(getCookie("theme"));
+  setEnglishFont(getCookie("en_font"));
+  setEnglishFontSize(getCookie("en_font_size"));
+  setJapaneseFont(getCookie("jp_font"));
+  setJapaneseFontSize(getCookie("jp_font_size"));
 });

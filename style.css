@@ -1,11 +1,29 @@
+@font-face {
+  font-family: seto-font;
+  src: url('fonts/setofont.woff');
+}
+@font-face {
+  font-family: chihaya-jun;
+  src: url('fonts/chihaya-jun.woff');
+}
+@font-face {
+  font-family: ankoku-zonji;
+  src: url('fonts/ankoku-zonji.woff');
+}
+@font-face {
+  font-family: k-gothic;
+  src: url('fonts/k-gothic.woff');
+}
+@font-face {
+  font-family: logo-maru;
+  src: url('fonts/logo-maru.woff');
+}
+
 :root {
-  --base-color:#6544e9;
-  --progress-color:#009991;
-  --progress-base:#004c48;
-  --learned-color:#009991;
-  --learning-color:#f4c430;
-  --text-color:white;
-  --border-color:black;
+  --english-font: arial;
+  --english-size: 72px;
+  --japanese-font: arial;
+  --japanese-size: 144px;
 }
 
 body {
@@ -31,9 +49,9 @@ body {
 
 .medium-circle-button {
   text-align: center;
-  font-size: 64px;
-  font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
-  display: block;
+  font-size: var(--english-size);
+  font-family: var(--english-font);
+  display: inline-flex;
   height: 192px;
   width: 192px;
   border-radius: 50%;
@@ -48,6 +66,7 @@ body {
   top: 80%;
   transition-property: opacity, transform;
   transition-duration: 0.1s, 0.25s;
+  justify-content: center;
 }
 
 .correct-circle {
@@ -69,12 +88,11 @@ body {
 
 #question {
   text-align: center;
-  font-size: 144px;
-  font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  font-size: var(--japanese-size);
+  font-family: var(--japanese-font);
   display: block;
   height: 288px;
   width: 288px;
-  border-radius: 50%;
   border: none;
   align-items: center;
   outline: none;
@@ -171,8 +189,64 @@ body {
     background-color: #cccccc;
 }
 
-#themeList {
+#themeList, #englishFontList, #japaneseFontList {
   font-size: 32px;
+  font-family: var(--english-font);
+  position: absolute;
+  top: 20%;
+  transform: translate(-50%,-50%);
+}
+
+#themeListText, #englishFontListText, #japaneseFontListText {
+  font-family: var(--english-font);
+  position: absolute;
+  top: 5%;
+  transform: translate(-50%,-50%);
+}
+
+#themeList, #themeListText {left: 15%;}
+#englishFontList, #englishFontListText, #englishSize {left: 50%;}
+#japaneseFontList, #japaneseFontListText, #japaneseSize {left: 85%;}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  border-radius: 0px;
+  height: 25px;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 30%;
+  background: var(--progress-base);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: var(--progress-color);
+  cursor: pointer;
+  border-radius: 0px;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: var(--progress-color);
+  cursor: pointer;
+  border-radius: 0px;
+}
+
+#version {
+  bottom: 3%;
+  right: 3%;
+}
+
+.settings {
+  color: var(--text-color);
+  font-family: var(--english-font);
+  position: absolute;
 }
 
 #loading {

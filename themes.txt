@@ -1,4 +1,5 @@
-Refold|--base-color:#6544e9;--progress-color:#009991;--progress-base:#004c48;--learned-color:#009991;--learning-color:#f4c430;--text-color:white;--border-color:black;
+Refold (Light)|--base-color:#6544e9;--progress-color:#009991;--progress-base:#004c48;--learned-color:#009991;--learning-color:#f4c430;--text-color:white;--border-color:black;
+Refold (Dark)|--base-color:#0a0713;--progress-color:#9d84ff;--progress-base:#8262ff;--learned-color:#44bae9;--learning-color:#eb5d40;--text-color:#9d84ff;--border-color:#30206f;
 Shadow|--base-color:#03071e;--progress-color:#43AA8B;--progress-base:#254441;--learned-color:#f4c430;--learning-color:#43AA8B;--text-color:#CDCDBF;--border-color:#B2B09B;
 Relaxed|--base-color:#50514F;--progress-color:#E952DE;--progress-base:#9882AC;--learned-color:#247BA0;--learning-color:#C3B299;--text-color:#FFFCFF;--border-color:#CBD4C2;
 Coffee|--base-color:#443742;--progress-color:#E2E8C0;--progress-base:#EDD9A3;--learned-color:#8FB8DE;--learning-color:#CEA07E;--text-color:#CDF7F6;--border-color:#846C5B;

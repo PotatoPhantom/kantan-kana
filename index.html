@@ -26,8 +26,33 @@
       <span class="helper unselectable"></span>
         <div>
           <div class="closeSettings">&times;</div>
-          <h1>Theme</h1>
+
+          <h5 id="version" class="settings">v1.2</h5>
+
+          <h1 id="themeListText" class="settings">Theme</h1>
           <select id="themeList"></select>
+
+          <h1 id="englishFontListText" class="settings">English Font</h1>
+          <select id="englishFontList">
+            <option value="arial">Arial</option>
+            <option value="georgia">Georgia</option>
+            <option value="courier">Courier</option>
+            <option value="Impact">Impact</option>
+            <option value="Comic Sans MS">Comic Sans</option>
+          </select>
+
+          <h1 id="japaneseFontListText" class="settings">Japanese Font</h1>
+          <select id="japaneseFontList">
+            <option value="arial">Arial</option>
+            <option value="seto-font">SetoFont</option>
+            <option value="chihaya-jun">Chihaya Jun</option>
+            <option value="k-gothic">K Gothic</option>
+            <option value="logo-maru">Logo Maru</option>
+            <option value="ankoku-zonji">Ankoku Zonji</option>
+          </select>
+
+          <input type="range" step="9" min="36" max="144" value="72" class="slider" id="englishSize">
+          <input type="range" step="18" min="72" max="288" value="144" class="slider" id="japaneseSize">
       </div>
     </div>
 
