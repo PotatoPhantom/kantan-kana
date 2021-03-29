@@ -162,7 +162,7 @@ function reset() {
   while (new_question === $("#question").text() || new_question === undefined) {
     if (unlearned.length > 0 && Object.keys(learning).length < 5 && Math.random() <= 0.5) {
       new_question = unlearned[0];
-    } else if (Object.keys(learning).length > 0){
+    } else if (Object.keys(learning).length > 1){
       new_question = randomKey(learning);
     } else {
       new_question = learned[Math.floor(Math.random() * learned.length)];
