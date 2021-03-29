@@ -26,7 +26,7 @@ function setRootValue(rkey, rvalue) {
 }
 
 function setTheme(theme_name) {
-  if (theme_name == "") {
+  if (theme_name == "" || !(Object.keys(themes).includes(theme_name))) {
     theme_name = Object.keys(themes)[0];
   }
   css_text = themes[theme_name];

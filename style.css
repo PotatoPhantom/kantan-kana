@@ -30,14 +30,6 @@ body {
   background-color: var(--base-color);
 }
 
-.notransition * {
-  -webkit-transition: none !important;
-  -moz-transition: none !important;
-  -o-transition: none !important;
-  -ms-transition: none !important;
-  transition: none !important;
-}
-
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
