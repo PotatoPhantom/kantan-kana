@@ -123,6 +123,7 @@ async function answer(number) {
     failed = true;
     //$("#answer" + number).css("background-color", "darkred");
     $("#answer" + number).css("opacity", "0.2");
+    $("#answer" + number).prop('disabled', true);
 
     if (question in learning) {
       learning[question] = learning[question] - 1;
@@ -193,8 +194,11 @@ function reset() {
     for (let i = 0; i < learning_kana.length; i++) {
       learning_romaji[i] = kana_romaji[learning_kana[i]];
     }
+    for (let i = 0; i < learned.length; i++) {
+      learning_romaji.push(kana_romaji[learned[i]]);
+    }
     learning_romaji = learning_romaji.concat(["a", "i", "u", "e", "o"]);
-    possible_guesses = Array.from(new Set(learned.concat(learning_romaji)));
+    possible_guesses = Array.from(new Set(learning_romaji));
     for (let i = 1; i <= 3; i++) {
       $("#answer" + i).css("border-color", "black");
       $("#answer" + i).css("color", "white");
