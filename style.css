@@ -28,6 +28,8 @@ body {
   position: absolute;
   transform: translate(-50%,-50%);
   top: 80%;
+  transition-property: opacity, transform;
+  transition-duration: 0.1s, 0.25s;
 }
 
 .correct-circle {

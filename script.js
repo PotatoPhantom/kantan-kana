@@ -84,9 +84,13 @@ async function answer(number) {
   var guess = $("#answer" + number).text();
 
   if (romaji_kana[guess].indexOf(question) >= 0) {
-    $("#answer" + number).css("background-color", "darkgreen");
+    //$("#answer" + number).css("background-color", "darkgreen");
+    $("#answer" + number).css('transform', "translate(-50%,-50%) scale(1.1)");
     for (let i = 1; i <= 3; i++) {
       $("#answer" + i).prop('disabled', true);
+      if (number != i) {
+        $("#answer" + i).css("opacity", "0.2");
+      }
     }
 
     if (!failed) {
@@ -117,7 +121,8 @@ async function answer(number) {
     reset();
   } else {
     failed = true;
-    $("#answer" + number).css("background-color", "darkred");
+    //$("#answer" + number).css("background-color", "darkred");
+    $("#answer" + number).css("opacity", "0.2");
 
     if (question in learning) {
       learning[question] = learning[question] - 1;
@@ -168,6 +173,8 @@ function reset() {
     for (let i = 1; i <= 3; i++) {
       $("#answer" + i).css("border-color", "black");
       $("#answer" + i).css("color", "white");
+      $("#answer" + i).css("opacity", "1");
+      $("#answer" + i).css('transform', "translate(-50%,-50%)");
       if (correct == i) {
         $("#answer" + i).css("background-color", "#6544e9");
         $("#answer" + i).text(correct_answer);
@@ -181,23 +188,26 @@ function reset() {
     }
   } else {
     chosen = [];
+    learning_kana = Object.keys(learning);
+    learning_romaji = [];
+    for (let i = 0; i < learning_kana.length; i++) {
+      learning_romaji[i] = kana_romaji[learning_kana[i]];
+    }
+    learning_romaji = learning_romaji.concat(["a", "i", "u", "e", "o"]);
+    possible_guesses = Array.from(new Set(learned.concat(learning_romaji)));
     for (let i = 1; i <= 3; i++) {
       $("#answer" + i).css("border-color", "black");
       $("#answer" + i).css("color", "white");
+      $("#answer" + i).css("opacity", "1");
+      $("#answer" + i).css('transform', "translate(-50%,-50%)");
       $("#answer" + i).prop('disabled', false);
       if (correct == i) {
         $("#answer" + i).css("background-color", "#6544e9");
         $("#answer" + i).text(correct_answer);
       } else {
-        var new_answer = kana_romaji[randomKey(learning)];
+        var new_answer = correct_answer;
         while (new_answer === correct_answer || chosen.includes(new_answer)) {
-          if (Math.random() <= 0.5) {
-            new_answer = kana_romaji[randomKey(learning)];
-          } else if (learned.length > 0 && Math.random() <= (learned.length * 0.5 / Object.keys(kana_romaji).length)) {
-            new_question = learned[Math.floor(Math.random() * learned.length)];
-          } else {
-            new_answer = randomProperty(kana_romaji);
-          }
+          new_answer = possible_guesses[Math.floor(Math.random() * possible_guesses.length)];
         }
         $("#answer" + i).css("background-color", "#6544e9");
         $("#answer" + i).text(new_answer);
