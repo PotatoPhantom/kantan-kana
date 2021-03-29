@@ -5,3 +5,6 @@ Relaxed|--base-color:#50514F;--progress-color:#E952DE;--progress-base:#9882AC;--
 Coffee|--base-color:#443742;--progress-color:#E2E8C0;--progress-base:#EDD9A3;--learned-color:#8FB8DE;--learning-color:#CEA07E;--text-color:#CDF7F6;--border-color:#846C5B;
 Gravel|--base-color:#96897B;--progress-color:#DBAD6A;--progress-base:#CF995F;--learned-color:#EC0B43;--learning-color:#628395;--text-color:#58355E;--border-color:#DFD5A5;
 Jungle|--base-color:#1A1F16;--progress-color:#345830;--progress-base:#1E3F20;--learned-color:#94ECBE;--learning-color:#4A7856;--text-color:#B0A990;--border-color:#D5C67A;
+Modern|--base-color:#34435E;--progress-color:#B88E8D;--progress-base:#362417;--learned-color:#60E1E0;--learning-color:#6369D1;--text-color:#D8D2E1;--border-color:#000500;
+BlazingRogue|--base-color:#F3752B;--progress-color:#FBFEF9;--progress-base:#000004;--learned-color:#0C6291;--learning-color:#A63446;--text-color:#FBFEF9;--border-color:#7E1946;
+Bubblegum|--base-color:#8BE8CF;--progress-color:#DBB6C0;--progress-base:#69E0C1;--learned-color:#B87788;--learning-color:#BD8C99;--text-color:#F0678C;--border-color:#B5919A;
