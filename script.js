@@ -155,7 +155,7 @@ function reset() {
   if (Math.random() <= (0.2 * Object.keys(learning).length)) {
     new_question = randomKey(learning);
   }
-  if (learned.length > 0 && Math.random() <= (learned.length * 0.5 / Object.keys(kana_romaji).length)) {
+  if (learned.length > 0 && Math.random() <= (learned.length * 0.25 / Object.keys(kana_romaji).length)) {
     new_question = learned[Math.floor(Math.random() * learned.length)];
   }
   while (new_question === $("#question").text()) {
