@@ -76,7 +76,7 @@ function setEnglishFontSize(size_unknown) {
 
 function setJapaneseFont(font_name) {
   if (font_name == "") {
-    font_name = 'arial';
+    font_name = 'notosans-thin';
   }
   setRootValue("--japanese-font", font_name + ", sans-serif");
   setCookie("jp_font", font_name, 365);

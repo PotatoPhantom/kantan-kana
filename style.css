@@ -7,10 +7,6 @@
   src: url('fonts/chihaya-jun.woff');
 }
 @font-face {
-  font-family: ankoku-zonji;
-  src: url('fonts/ankoku-zonji.woff');
-}
-@font-face {
   font-family: k-gothic;
   src: url('fonts/k-gothic.woff');
 }
@@ -18,11 +14,43 @@
   font-family: logo-maru;
   src: url('fonts/logo-maru.woff');
 }
+@font-face {
+  font-family: ankoku-zonji;
+  src: url('fonts/ankoku-zonji.woff');
+}
+@font-face {
+  font-family: kawaii;
+  src: url('fonts/kawaii.woff');
+}
+@font-face {
+  font-family: jackeyfont;
+  src: url('fonts/jackeyfont.woff');
+}
+@font-face {
+  font-family: kf-himaji;
+  src: url('fonts/kf-himaji.woff');
+}
+@font-face {
+  font-family: mart-futomaru;
+  src: url('fonts/mart-futomaru.woff');
+}
+@font-face {
+  font-family: stroke-order;
+  src: url('fonts/stroke-order.woff');
+}
+@font-face {
+  font-family: mini-wakuwaku;
+  src: url('fonts/mini-wakuwaku.woff');
+}
+@font-face {
+  font-family: notosans-thin;
+  src: url('fonts/notosans-thin.woff');
+}
 
 :root {
   --english-font: arial;
   --english-size: 72px;
-  --japanese-font: arial;
+  --japanese-font: notosans-thin, sans-serif;
   --japanese-size: 144px;
 }
 
