@@ -1,0 +1,3 @@
+Refold|--base-color:#6544e9;--progress-color:#009991;--progress-base:#004c48;--learned-color:#009991;--learning-color:#f4c430;--text-color:white;--border-color:black;
+Shadow|--base-color:#03071e;--progress-color:#43AA8B;--progress-base:#254441;--learned-color:#f4c430;--learning-color:#43AA8B;--text-color:#CDCDBF;--border-color:#B2B09B;
+Relaxed|--base-color:#50514F;--progress-color:#E952DE;--progress-base:#9882AC;--learned-color:#247BA0;--learning-color:#C3B299;--text-color:#FFFCFF;--border-color:#CBD4C2;

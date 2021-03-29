@@ -10,7 +10,39 @@ var unlearned = [];
 var learning = {};
 var learned = [];
 
+var themes = {};
+
 var failed = false;
+
+var root_element = document.querySelector(':root');
+
+function getRootValue(rkey) {
+  var styles = getComputedStyle(root_element);
+  return styles.getPropertyValue(rkey);
+}
+
+function setRootValue(rkey, rvalue) {
+  root_element.style.setProperty(rkey, rvalue);
+}
+
+function setTheme(theme_name) {
+  css_text = themes[theme_name];
+  if (css_text !== undefined) {
+    css_values = css_text.split(";")
+    for (let i = 0; i < css_values.length; i++) {
+      if (css_values[i] != "") {
+        new_css = css_values[i].split(":");
+        setRootValue(new_css[0], new_css[1]);
+      }
+    }
+  }
+
+  setCookie("theme", theme_name, 365);
+
+  loadProgress();
+  $("#question").text("");
+  reset();
+}
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date();
@@ -65,11 +97,11 @@ function loadProgress() {
 
   for (let i = 1; i <= 10; i++) {
     if (learned.includes(question)) {
-      $("#correct" + i).css("background-color", "#009991");
+      $("#correct" + i).css("background-color", getRootValue("--learned-color"));
     } else if (question in learning && learning[question] >= i) {
-      $("#correct" + i).css("background-color", "#f4c430");
+      $("#correct" + i).css("background-color", getRootValue("--learning-color"));
     } else {
-      $("#correct" + i).css("background-color", "#6544e9");
+      $("#correct" + i).css("background-color", getRootValue("--base-color"));
     }
   }
 
@@ -84,7 +116,6 @@ async function answer(number) {
   var guess = $("#answer" + number).text();
 
   if (romaji_kana[guess].indexOf(question) >= 0) {
-    //$("#answer" + number).css("background-color", "darkgreen");
     $("#answer" + number).css('transform', "translate(-50%,-50%) scale(1.1)");
     for (let i = 1; i <= 3; i++) {
       $("#answer" + i).prop('disabled', true);
@@ -106,11 +137,11 @@ async function answer(number) {
       }
 
       if (learned.includes(question)) {
-        $("#question").css("color", "#009991");
+        $("#question").css("color", getRootValue("--learned-color"));
       } else if (question in learning) {
-        $("#question").css("color", "#f4c430");
+        $("#question").css("color", getRootValue("--learning-color"));
       } else {
-        $("#question").css("color", "white");
+        $("#question").css("color", getRootValue("--text-color"));
       }
     }
     $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
@@ -121,7 +152,6 @@ async function answer(number) {
     reset();
   } else {
     failed = true;
-    //$("#answer" + number).css("background-color", "darkred");
     $("#answer" + number).css("opacity", "0.2");
     $("#answer" + number).prop('disabled', true);
 
@@ -148,7 +178,7 @@ async function answer(number) {
 function reset() {
   failed = false;
 
-  $("#question").css("color", "white");
+  $("#question").css("color", getRootValue("--text-color"));
   $("#question").css("transform", "translate(-50%,-50%)");
 
   var new_question = unlearned[0];
@@ -175,18 +205,18 @@ function reset() {
   if (unlearned.includes(new_question)) {
     correct = 2;
     for (let i = 1; i <= 3; i++) {
-      $("#answer" + i).css("border-color", "black");
-      $("#answer" + i).css("color", "white");
+      $("#answer" + i).css("border-color", getRootValue("--border-color"));
+      $("#answer" + i).css("color", getRootValue("--text-color"));
       $("#answer" + i).css("opacity", "1");
       $("#answer" + i).css('transform', "translate(-50%,-50%)");
       if (correct == i) {
-        $("#answer" + i).css("background-color", "#6544e9");
+        $("#answer" + i).css("background-color", getRootValue("--base-color"));
         $("#answer" + i).text(correct_answer);
         $("#answer" + i).prop('disabled', false);
       } else {
-        $("#answer" + i).css("border-color", "#6544e9");
-        $("#answer" + i).css("color", "#6544e9");
-        $("#answer" + i).css("background-color", "#6544e9");
+        $("#answer" + i).css("border-color", getRootValue("--base-color"));
+        $("#answer" + i).css("color", getRootValue("--base-color"));
+        $("#answer" + i).css("background-color", getRootValue("--base-color"));
         $("#answer" + i).prop('disabled', true);
       }
     }
@@ -203,20 +233,20 @@ function reset() {
     learning_romaji = learning_romaji.concat(["a", "i", "u", "e", "o"]);
     possible_guesses = Array.from(new Set(learning_romaji));
     for (let i = 1; i <= 3; i++) {
-      $("#answer" + i).css("border-color", "black");
-      $("#answer" + i).css("color", "white");
+      $("#answer" + i).css("border-color", getRootValue("--border-color"));
+      $("#answer" + i).css("color", getRootValue("--text-color"));
       $("#answer" + i).css("opacity", "1");
       $("#answer" + i).css('transform', "translate(-50%,-50%)");
       $("#answer" + i).prop('disabled', false);
       if (correct == i) {
-        $("#answer" + i).css("background-color", "#6544e9");
+        $("#answer" + i).css("background-color", getRootValue("--base-color"));
         $("#answer" + i).text(correct_answer);
       } else {
         var new_answer = correct_answer;
         while (new_answer === correct_answer || chosen.includes(new_answer)) {
           new_answer = possible_guesses[Math.floor(Math.random() * possible_guesses.length)];
         }
-        $("#answer" + i).css("background-color", "#6544e9");
+        $("#answer" + i).css("background-color", getRootValue("--base-color"));
         $("#answer" + i).text(new_answer);
         chosen[i - 1] = new_answer;
       }
@@ -248,7 +278,7 @@ $(document).ready(function() {
     unlearned.push(katakana_list[i]);
   }
 
-  for(var i = 1; i <= 10; i++) {
+  for(let i = 1; i <= 10; i++) {
     var left = 28 + (4 * i);
     $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
   }
@@ -270,4 +300,28 @@ $(document).ready(function() {
   }
 
   reset();
+
+  $("#settings").click(function(){
+     $('.hover_background').show();
+  });
+  $('.closeSettings').click(function(){
+      $('.hover_background').hide();
+  });
+  document.getElementById("themeList").onchange = function() {
+     setTheme(this.value);
+     return false;
+  };
+});
+
+$.get("themes.txt", function(text) {
+  theme_parse = text.split("\n");
+  for (let i = 0; i < theme_parse.length; i++) {
+    var theme = theme_parse[i];
+    if (theme_parse[i].includes("|")) {
+      var pieces = theme.split("|");
+      themes[pieces[0]] = pieces[1];
+      $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
+    }
+  }
+  setTheme(getCookie("theme"));
 });

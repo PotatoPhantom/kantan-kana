@@ -1,5 +1,15 @@
+:root {
+  --base-color:#6544e9;
+  --progress-color:#009991;
+  --progress-base:#004c48;
+  --learned-color:#009991;
+  --learning-color:#f4c430;
+  --text-color:white;
+  --border-color:black;
+}
+
 body {
-  background-color: #6544e9;
+  background-color: var(--base-color);
 }
 
 .unselectable {
@@ -20,11 +30,11 @@ body {
   width: 192px;
   border-radius: 50%;
   border: 12px solid;
-  border-color: black;
+  border-color: var(--border-color);
   align-items: center;
   outline: none;
-  color: white;
-  background-color: #6544e9;
+  color: var(--text-color);
+  background-color: var(--base-color);
   position: absolute;
   transform: translate(-50%,-50%);
   top: 80%;
@@ -38,13 +48,13 @@ body {
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  border: 4px solid black;
+  border: 4px solid var(--border-color);
   align-items: center;
   outline: none;
-  background-color: #6544e9;
+  background-color: var(--base-color);
   position: absolute;
   transform: translate(-50%,-50%);
-  top: 5%;
+  top: 10%;
   transition-property: background-color;
   transition-duration: 0.5s;
 }
@@ -60,8 +70,8 @@ body {
   border: none;
   align-items: center;
   outline: none;
-  color: white;
-  background-color: #6544e9;
+  color: var(--text-color);
+  background-color: var(--base-color);
   position: absolute;
   left: 50%;
   top: 40%;
@@ -73,26 +83,86 @@ body {
 #container {
   width: 100%;
   padding: 1em;
-  background: #004c48;
+  background: var(--progress-base);
   position: absolute;
-  bottom: 10%;
-  bottom: 0px;
+  top: 10%;
+  top: 0px;
   left: 0px;
-  border-radius: 10px;
+  border-radius: 0px;
   padding-right: 0px;
   padding-left: 0px;
 }
 
 #progress {
-  background-color: #009991;
-  color: black;
-  border-radius: 10px;
-  bottom: 10%;
+  background-color: var(--progress-color);
+  border-radius: 0px;
+  top: 10%;
   width: 0%;
   height: 32px;
   position: absolute;
-  bottom: 0px;
+  top: 0px;
   left: 0px;
   transition-property: width;
   transition-duration: 1s;
+}
+
+#settings {
+  align-items: center;
+  transform: translate(-50%,-50%);
+  right: -48px;
+  bottom: -48px;
+  position: absolute;
+}
+
+.hover_background{
+    background:rgba(0,0,0,.4);
+    display:none;
+    height:100%;
+    position:fixed;
+    text-align:center;
+    color: var(--text-color);
+    top:0;
+    left:0;
+    width:100%;
+    z-index:10000;
+}
+.hover_background .helper{
+    display:inline-block;
+    height:100%;
+    vertical-align:middle;
+}
+.hover_background > div {
+    background-color: var(--base-color);
+    display: inline-block;
+    vertical-align: middle;
+    width: 60%;
+    height: 60%;
+    position: relative;
+    border-radius: 0px;
+    padding: 15px 5%;
+}
+.closeSettings {
+    background-color: white;
+    border: 4px solid black;
+    border-radius: 50px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-weight: bold;
+    color: black;
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-size: 40px;
+    line-height: 48px;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+}
+.closeSettings:hover {
+    background-color: #cccccc;
+}
+
+#themeList {
+  font-size: 32px;
 }
