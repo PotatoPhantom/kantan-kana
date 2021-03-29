@@ -311,6 +311,7 @@ $(document).ready(function() {
      setTheme(this.value);
      return false;
   };
+  $("#loading").css("opacity", "0");
 });
 
 $.get("themes.txt", function(text) {
