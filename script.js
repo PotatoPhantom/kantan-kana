@@ -25,6 +25,12 @@ function setRootValue(rkey, rvalue) {
   root_element.style.setProperty(rkey, rvalue);
 }
 
+function playSound(sound_name) {
+  var audio = new Audio('audio/' + sound_name + '.mp3');
+  audio.volume = 0.8;
+  audio.play();
+}
+
 function setTheme(theme_name) {
   if (theme_name == "" || !(Object.keys(themes).includes(theme_name))) {
     theme_name = Object.keys(themes)[0];
@@ -188,6 +194,7 @@ async function answer(number) {
       }
     }
 
+    playSound(guess);
     loadProgress();
 
     $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
