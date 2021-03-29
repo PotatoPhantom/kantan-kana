@@ -42,6 +42,7 @@ function setTheme(theme_name) {
   loadProgress();
   $("#question").text("");
   reset();
+  loadingScreen();
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -144,11 +145,13 @@ async function answer(number) {
         $("#question").css("color", getRootValue("--text-color"));
       }
     }
-    $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
 
     loadProgress();
 
-    await sleep(1000);
+    $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
+    await sleep(250);
+    $("#question").css("transform", "translate(-50%,-50%)");
+    await sleep(750);
     reset();
   } else {
     failed = true;
@@ -311,8 +314,17 @@ $(document).ready(function() {
      setTheme(this.value);
      return false;
   };
-  $("#loading").css("opacity", "0");
+
+  loadingScreen();
 });
+
+async function loadingScreen() {
+  $("#loading").show();
+  $("#loading").css("opacity", "0");
+  await sleep(800);
+  $("#loading").hide();
+  $("#loading").css("opacity", "1");
+}
 
 $.get("themes.txt", function(text) {
   theme_parse = text.split("\n");

@@ -12,6 +12,14 @@ body {
   background-color: var(--base-color);
 }
 
+.notransition * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+}
+
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -61,11 +69,11 @@ body {
 
 #question {
   text-align: center;
-  font-size: 128px;
+  font-size: 144px;
   font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
   display: block;
-  height: 256px;
-  width: 256px;
+  height: 288px;
+  width: 288px;
   border-radius: 50%;
   border: none;
   align-items: center;
@@ -74,10 +82,10 @@ body {
   background-color: var(--base-color);
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 45%;
   transform: translate(-50%,-50%);
   transition-property: color, transform;
-  transition-duration: 0.5s;
+  transition-duration: 0.25s, 0.5s;
 }
 
 #container {
