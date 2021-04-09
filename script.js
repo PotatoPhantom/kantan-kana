@@ -492,6 +492,10 @@ function loadLearned() {
   for(var i = 0; i < learning_keys.length; i++) {
     unlearned = removeItem(unlearned, learning_keys[i]);
   }
+
+  learned_hiragana = Array.from(new Set(learned_hiragana));
+  learned_katakana = Array.from(new Set(learned_katakana));
+  unlearned = Array.from(new Set(unlearned));
 }
 
 function genReqCircles() {
