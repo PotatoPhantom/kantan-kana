@@ -2,19 +2,25 @@ var kana_parse = "あアa:いイi:うウu:えエe:おオo:かカka:きキki:く�
 
 var kana_romaji = {};
 var romaji_kana = {};
+var voiced_kana = {"か": "が", "き": "ぎ", "く": "ぐ", "け": "げ", "こ": "ご", "さ": "ざ", "し": "じ", "す": "ず", "せ": "ぜ", "そ": "ぞ", "た": "だ", "ち": "ぢ", "つ": "づ", "て": "で", "と": "ど", "は": "ばぱ", "ひ": "びぴ", "ふ": "ぶぷ", "へ": "べぺ", "ほ": "ぼぽ", "カ": "ガ", "キ": "ギ", "ク": "グ", "ケ": "ゲ", "コ": "ゴ", "サ": "ザ", "シ": "ジ", "ス": "ズ", "セ": "ゼ", "ソ": "ゾ", "タ": "ダ", "チ": "ヂ", "ツ": "ヅ", "テ": "デ", "ト": "ド", "ハ": "バパ", "ヒ": "ビピ", "フ": "ブプ", "ヘ": "ベペ", "ホ": "ボポ"};
 
 var hiragana_list = [];
 var katakana_list = [];
 
 var unlearned = [];
-var learning = {};
-var learned = [];
+var learning_hiragana = {};
+var learning_katakana = {};
+var learned_hiragana = [];
+var learned_katakana = [];
 
 var themes = {};
 
 var failed = false;
+var hiragana_started = true;
 
 var root_element = document.querySelector(':root');
+
+var correct_required = 9;
 
 function getRootValue(rkey) {
   var styles = getComputedStyle(root_element);
@@ -29,6 +35,60 @@ function playSound(sound_name) {
   var audio = new Audio('audio/' + sound_name + '.mp3');
   audio.volume = 0.8;
   audio.play();
+}
+
+function hideTables() {
+  $("#hiragana_table").hide();
+  $("#hiragana_combo").hide();
+  $("#katakana_table").hide();
+  $("#katakana_combo").hide();
+}
+
+function showTables() {
+  $("#hiragana_table").show();
+  $("#hiragana_combo").show();
+  $("#katakana_table").show();
+  $("#katakana_combo").show();
+
+  startClearCheck();
+}
+
+function startClearCheck() {
+  if (learned_hiragana.includes('ひ') && learned_hiragana.includes('ら') && learned_hiragana.includes('か') && learned_hiragana.includes('な')) {
+    $("#hiragana-start").text("ひらがな");
+    $("#hiragana-start").css("color", getRootValue("--learning-color"));
+  }
+  if (learned_katakana.includes('カ') && learned_katakana.includes('タ') && learned_katakana.includes('ナ')) {
+    $("#katakana-start").text("カタカナ");
+    $("#katakana-start").css("color", getRootValue("--learning-color"));
+  }
+  if (learned_hiragana.length >= 46 && learned_katakana.length >= 46) {
+    $("#title").css("color", getRootValue("--learned-color"));
+  }
+}
+
+function startHiragana() {
+  hiragana_started = true;
+  unlearned = [];
+  for (let i = 0; i < hiragana_list.length; i++) {
+    unlearned.push(hiragana_list[i]);
+  }
+  loadLearned();
+  reset();
+  $("#menu").hide();
+  hideTables();
+}
+
+function startKatakana() {
+  hiragana_started = false;
+  unlearned = [];
+  for (let i = 0; i < katakana_list.length; i++) {
+    unlearned.push(katakana_list[i]);
+  }
+  loadLearned();
+  reset();
+  $("#menu").hide();
+  hideTables();
 }
 
 function setTheme(theme_name) {
@@ -52,6 +112,8 @@ function setTheme(theme_name) {
   loadProgress();
   $("#question").text("");
   reset();
+  startClearCheck();
+  refreshTables();
   loadingScreen();
 }
 
@@ -66,17 +128,17 @@ function setEnglishFont(font_name) {
 
 function setEnglishFontSize(size_unknown) {
   var size = Math.round(size_unknown);
-  if (size == 0) {
-    size = 72;
+  if (size == 0 || size > 12) {
+    size = 6;
   }
-  setRootValue("--english-size", size + "px");
+  setRootValue("--english-size", size + "em");
   setCookie("en_font_size", "" + size, 365);
   $("#englishSize").val(size);
 }
 
 function setJapaneseFont(font_name) {
   if (font_name == "") {
-    font_name = 'notosans-thin';
+    font_name = 'mini-wakuwaku';
   }
   setRootValue("--japanese-font", font_name + ", sans-serif");
   setCookie("jp_font", font_name, 365);
@@ -85,15 +147,58 @@ function setJapaneseFont(font_name) {
 
 function setJapaneseFontSize(size_unknown) {
   var size = Math.round(size_unknown);
-  if (size == 0) {
-    size = 144;
+  if (size == 0 || size > 20) {
+    size = 12;
   }
-  setRootValue("--japanese-size", size + "px");
+  setRootValue("--japanese-size", size + "em");
   setCookie("jp_font_size", "" + size, 365);
   $("#japaneseSize").val(size);
 }
 
+function setReqCorrect(required_unknown) {
+  var new_required = Math.round(required_unknown);
+  if (new_required <= 1 || new_required > 10) {
+    new_required = 9;
+  }
+  correct_required = new_required;
+  $(".correct-circle").remove();
+  genReqCircles();
+  loadProgress();
+  setCookie("required", "" + new_required, 365);
+  $("#correctRequired").val(new_required);
+}
+
+function refreshTables() {
+  var kana_check = Object.keys(kana_romaji);
+  for (let i = 0; i < kana_check.length; i++) {
+    updateTable(kana_check[i]);
+  }
+}
+
+function updateTable(kana_character) {
+  var root_color = "--text-color";
+  if (isLearned(kana_character)) {
+    root_color = "--learned-color";
+  } else if (kana_character in learning_hiragana || kana_character in learning_katakana) {
+    root_color = "--learning-color";
+  }
+  $("span").filter(function() { return ($(this).text() === ' ' + kana_character + ' ') }).css("color", getRootValue(root_color));
+  if (Object.keys(voiced_kana).includes(kana_character)) {
+    kana_check = voiced_kana[kana_character];
+    for (let i = 0; i < kana_check.length; i++) {
+      $("span").filter(function() { return ($(this).text() === ' ' + kana_check.charAt(i) + ' ') }).css("color", getRootValue(root_color));
+    }
+  }
+  else if (kana_character == 'や') {$("span:contains(ゃ)").css("color", getRootValue(root_color));}
+  else if (kana_character == 'ゆ') {$("span:contains(ゅ)").css("color", getRootValue(root_color));}
+  else if (kana_character == 'よ') {$("span:contains(ょ)").css("color", getRootValue(root_color));}
+  else if (kana_character == 'ヤ') {$("span:contains(ャ)").css("color", getRootValue(root_color));}
+  else if (kana_character == 'ユ') {$("span:contains(ュ)").css("color", getRootValue(root_color));}
+  else if (kana_character == 'ヨ') {$("span:contains(ョ)").css("color", getRootValue(root_color));}
+}
+
 function setCookie(cname, cvalue, exdays) {
+  return false;
   var d = new Date();
   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
   var expires = "expires=" + d.toUTCString();
@@ -141,22 +246,74 @@ function removeItem(array, value) {
   return array;
 }
 
+function getLearning(key) {
+  if (hiragana_list.includes(key)) {return learning_hiragana[key];}
+  else {return learning_katakana[key];}
+}
+
+function setLearning(key, value) {
+  if (hiragana_list.includes(key)) {learning_hiragana[key] = value;}
+  else {learning_katakana[key] = value;}
+}
+
+function removeLearning(key) {
+  if (hiragana_list.includes(key)) {delete learning_hiragana[key];}
+  else {delete learning_katakana[key];}
+}
+
+function addLearned(key) {
+  if (hiragana_list.includes(key)) {learned_hiragana.push(key);}
+  else {learned_katakana.push(key);}
+}
+
+function removeLearned(key) {
+  if (hiragana_list.includes(key)) {learned_hiragana = removeItem(learned_hiragana, key);}
+  else {learned_katakana = removeItem(learned_katakana, key);}
+}
+
+function isLearned(key) {
+  if (learned_hiragana.includes(key) || learned_katakana.includes(key)) {return true;}
+  return false;
+}
+
+function currentLearning() {
+  if (hiragana_started) {return learning_hiragana}
+  else {return learning_katakana}
+}
+
+function currentLearned() {
+  if (hiragana_started) {return learned_hiragana}
+  else {return learned_katakana}
+}
+
+function currentKana() {
+  if (hiragana_started) {return hiragana_list}
+  else {return katakana_list}
+}
+
+// I have absolutely no clue how to make any of this efficient but if it works fast enough then it works for me.
+
 function loadProgress() {
   var question = $("#question").text();
 
-  for (let i = 1; i <= 10; i++) {
-    if (learned.includes(question)) {
+  for (let i = 1; i <= correct_required; i++) {
+    if (isLearned(question)) {
       $("#correct" + i).css("background-color", getRootValue("--learned-color"));
-    } else if (question in learning && learning[question] >= i) {
+    } else if (getLearning(question) !== undefined && getLearning(question) >= i) {
       $("#correct" + i).css("background-color", getRootValue("--learning-color"));
     } else {
       $("#correct" + i).css("background-color", getRootValue("--base-color"));
     }
   }
 
-  var width_percent = learned.length / Object.keys(kana_romaji).length * 100;
+  if (hiragana_started) {
+    var width_percent = learned_hiragana.length / Object.keys(hiragana_list).length * 100;
+  } else {
+    var width_percent = learned_katakana.length / Object.keys(katakana_list).length * 100;
+  }
 
   $("#progress").css("width", width_percent + "%");
+  $(".romaji").css('opacity', (1 - width_percent / 200) + "");
 }
 
 async function answer(number) {
@@ -175,20 +332,22 @@ async function answer(number) {
 
     if (!failed) {
       if (unlearned.includes(question)) {
-        learning[question] = 1;
+        setLearning(question, 1);
         unlearned = removeItem(unlearned, question);
-      } else if (question in learning) {
-        learning[question] = learning[question] + 1;
-        if (learning[question] === 10) {
-          delete learning[question];
-          learned.push(question);
+      } else if (question in currentLearning()) {
+        setLearning(question, getLearning(question) + 1);
+        if (getLearning(question) >= correct_required) {
+          removeLearning(question);
+          addLearned(question);
         }
       }
 
-      if (learned.includes(question)) {
+      if (isLearned(question)) {
         $("#question").css("color", getRootValue("--learned-color"));
-      } else if (question in learning) {
+        updateTable(question);
+      } else if (getLearning(question) !== undefined) {
         $("#question").css("color", getRootValue("--learning-color"));
+        updateTable(question);
       } else {
         $("#question").css("color", getRootValue("--text-color"));
       }
@@ -207,15 +366,15 @@ async function answer(number) {
     $("#answer" + number).css("opacity", "0.2");
     $("#answer" + number).prop('disabled', true);
 
-    if (question in learning) {
-      learning[question] = learning[question] - 1;
+    if (question in currentLearning()) {
+      setLearning(question, getLearning(question) - 1);
 
-      if (learning[question] < 0) {
-        learning[question] = 0;
+      if (getLearning(question) < 0) {
+        setLearning(question, 0);
       }
-    } else if (learned.includes(question)) {
-      learning[question] = 9;
-      learned = removeItem(learned, question);
+    } else if (isLearned(question)) {
+      setLearning(question, correct_required - 1);
+      removeLearned(question);
     } else {
       alert("oh no");
     }
@@ -223,8 +382,8 @@ async function answer(number) {
     loadProgress();
   }
 
-  setCookie("learned", learned.toString(), 30);
-  setCookie("learning", JSON.stringify(learning), 30);
+  setCookie("learned", learned_hiragana.concat(learned_katakana).toString(), 30);
+  setCookie("learning", JSON.stringify(Object.assign({}, learning_hiragana, learning_katakana)), 30);
 }
 
 function reset() {
@@ -235,19 +394,21 @@ function reset() {
 
   var new_question = unlearned[0];
 
-  if (Object.keys(learning).length > 0 && Math.random() <= (0.2 * Object.keys(learning).length)) {
-    new_question = randomKey(learning);
+  if (Object.keys(currentLearning()).length > 0 && Math.random() <= (0.2 * Object.keys(currentLearning()).length)) {
+    new_question = randomKey(currentLearning());
   }
-  if (learned.length > 0 && Math.random() <= (learned.length * 0.25 / Object.keys(kana_romaji).length)) {
-    new_question = learned[Math.floor(Math.random() * learned.length)];
+  if (currentLearned().length > 0 && Math.random() <= (currentLearned.length * 0.25 / Object.keys(currentKana()).length)) {
+    new_question = currentLearned[Math.floor(Math.random() * currentLearned.length)];
   }
   while (new_question === $("#question").text() || new_question === undefined) {
-    if (unlearned.length > 0 && Object.keys(learning).length < 5 && Math.random() <= 0.5) {
+    if (unlearned.length > 0 && Object.keys(currentLearning()).length < 5 && Math.random() <= 0.5) {
       new_question = unlearned[0];
-    } else if (Object.keys(learning).length > 1){
-      new_question = randomKey(learning);
+    } else if (Object.keys(currentLearning()).length > 1){
+      new_question = randomKey(currentLearning());
+    } else if (currentLearned().length > 0){
+      new_question = currentLearned()[Math.floor(Math.random() * currentLearned().length)];
     } else {
-      new_question = learned[Math.floor(Math.random() * learned.length)];
+      break;
     }
   }
   $("#question").text(new_question);
@@ -274,13 +435,13 @@ function reset() {
     }
   } else {
     chosen = [];
-    learning_kana = Object.keys(learning);
+    learning_kana = Object.keys(currentLearning());
     learning_romaji = [];
     for (let i = 0; i < learning_kana.length; i++) {
       learning_romaji[i] = kana_romaji[learning_kana[i]];
     }
-    for (let i = 0; i < learned.length; i++) {
-      learning_romaji.push(kana_romaji[learned[i]]);
+    for (let i = 0; i < currentLearned().length; i++) {
+      learning_romaji.push(kana_romaji[currentLearned()[i]]);
     }
     learning_romaji = learning_romaji.concat(["a", "i", "u", "e", "o"]);
     possible_guesses = Array.from(new Set(learning_romaji));
@@ -308,6 +469,39 @@ function reset() {
   loadProgress();
 }
 
+function loadLearned() {
+  var saved_learned = getCookie("learned");
+  if (saved_learned != "") {
+    var learned = saved_learned.split(",");
+    for(var i = 0; i < learned.length; i++) {
+      if (hiragana_list.includes(learned[i])) {learned_hiragana.push(learned[i])}
+      else {learned_katakana.push(learned[i])}
+    }
+  }
+
+  var saved_learning = getCookie("learning");
+  if (saved_learning != "") {
+    var learning = JSON.parse(saved_learning);
+    var learning_keys = Object.keys(learning);
+    for(var i = 0; i < learning_keys.length; i++) {
+      if (hiragana_list.includes(learning_keys[i])) {learning_hiragana[learning_keys[i]] = learning[learning_keys[i]]}
+      else {learning_katakana[learning_keys[i]] = learning[learning_keys[i]]}
+    }
+  }
+
+  var learning_keys = Object.keys(currentLearning()).concat(currentLearned());
+  for(var i = 0; i < learning_keys.length; i++) {
+    unlearned = removeItem(unlearned, learning_keys[i]);
+  }
+}
+
+function genReqCircles() {
+  for(let i = 1; i <= correct_required; i++) {
+    var left = (50 - correct_required / 2 * 4 - 2) + (4 * i);
+    $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
+  }
+}
+
 $(document).ready(function() {
 
   for (let i = 0; i < kana_parse.length; i++) {
@@ -323,41 +517,36 @@ $(document).ready(function() {
     katakana_list.push(katakana);
   }
 
-  for (let i = 0; i < hiragana_list.length; i++) {
-    unlearned.push(hiragana_list[i]);
-  }
-  for (let i = 0; i < katakana_list.length; i++) {
-    unlearned.push(katakana_list[i]);
-  }
+  loadLearned();
 
-  for(let i = 1; i <= 10; i++) {
-    var left = 28 + (4 * i);
-    $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
-  }
-
-  var saved_learned = getCookie("learned");
-  if (saved_learned != "") {
-    learned = saved_learned.split(",");
-    for(var i = 0; i < learned.length; i++) {
-      removeItem(unlearned, learned[i]);
-    }
-  }
-
-  var saved_learning = getCookie("learning");
-  if (saved_learning != "") {
-    learning = JSON.parse(saved_learning);
-    for(var i = 0; i < Object.keys(learning).length; i++) {
-      removeItem(unlearned, Object.keys(learning)[i]);
-    }
-  }
-
-  reset();
+  genReqCircles();
 
   $("#settings").click(function(){
      $('.hover_background').show();
   });
   $('.closeSettings').click(function(){
       $('.hover_background').hide();
+  });
+  $("#arrow").click(function(){
+     $('#menu').show();
+     showTables();
+  });
+  $("#reset").click(function(){
+     if (confirm("Would you like to reset your progress? 1/5") && confirm("Are you sure you want to reset your progress? 2/5") && confirm("All your progress so far will be erased! 3/5") && confirm("Your progress cannot be recovered! 4/5") && confirm("Pressing OK will finally delete all your progress... 5/5")) {
+       // Literally everything I can think of
+       loadingScreen();
+       learned_hiragana = [];
+       learned_katakana = [];
+       learning_hiragana = {};
+       learning_katakana = {};
+       setCookie("learned", "");
+       setCookie("learning", "");
+       loadLearned();
+       refreshTables();
+       loadProgress();
+       startClearCheck();
+       window.location.reload();
+     }
   });
   document.getElementById("themeList").onchange = function() {
      setTheme(this.value);
@@ -379,12 +568,18 @@ $(document).ready(function() {
      setJapaneseFontSize(this.value);
      return false;
   };
+  document.getElementById("correctRequired").onchange = function() {
+     setReqCorrect(this.value);
+     return false;
+  };
 
+  startClearCheck();
   loadingScreen();
 });
 
 async function loadingScreen() {
   $("#loading").show();
+  await sleep(100);
   $("#loading").css("opacity", "0");
   await sleep(800);
   $("#loading").hide();
@@ -401,9 +596,15 @@ $.get("themes.txt", function(text) {
       $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
     }
   }
+  for(let i = 3; i <= 10; i++) {
+    // The number of required correct multiplied by the number of kana, average time between answers in minutes. Adding about 1.5m to learn.
+    $('<option value=' + i + '>' + i + '</option>').appendTo("#correctRequired");
+  }
   setTheme(getCookie("theme"));
   setEnglishFont(getCookie("en_font"));
   setEnglishFontSize(getCookie("en_font_size"));
   setJapaneseFont(getCookie("jp_font"));
   setJapaneseFontSize(getCookie("jp_font_size"));
+  setReqCorrect(getCookie("required"));
+  refreshTables();
 });

@@ -1,10 +1,10 @@
-Refold (Light)|--base-color:#6544e9;--progress-color:#009991;--progress-base:#004c48;--learned-color:#009991;--learning-color:#f4c430;--text-color:white;--border-color:black;
 Refold (Dark)|--base-color:#0a0713;--progress-color:#9d84ff;--progress-base:#8262ff;--learned-color:#44bae9;--learning-color:#eb5d40;--text-color:#9d84ff;--border-color:#30206f;
 Shadow|--base-color:#03071e;--progress-color:#43AA8B;--progress-base:#254441;--learned-color:#f4c430;--learning-color:#43AA8B;--text-color:#CDCDBF;--border-color:#B2B09B;
 Relaxed|--base-color:#50514F;--progress-color:#E952DE;--progress-base:#9882AC;--learned-color:#247BA0;--learning-color:#C3B299;--text-color:#FFFCFF;--border-color:#CBD4C2;
 Coffee|--base-color:#443742;--progress-color:#E2E8C0;--progress-base:#EDD9A3;--learned-color:#8FB8DE;--learning-color:#CEA07E;--text-color:#CDF7F6;--border-color:#846C5B;
-Gravel|--base-color:#96897B;--progress-color:#DBAD6A;--progress-base:#CF995F;--learned-color:#EC0B43;--learning-color:#628395;--text-color:#58355E;--border-color:#DFD5A5;
+Mixed|--base-color:#96897B;--progress-color:#DBAD6A;--progress-base:#CF995F;--learned-color:#EC0B43;--learning-color:#628395;--text-color:#58355E;--border-color:#DFD5A5;
 Jungle|--base-color:#1A1F16;--progress-color:#345830;--progress-base:#1E3F20;--learned-color:#94ECBE;--learning-color:#4A7856;--text-color:#B0A990;--border-color:#D5C67A;
 Modern|--base-color:#34435E;--progress-color:#B88E8D;--progress-base:#362417;--learned-color:#60E1E0;--learning-color:#6369D1;--text-color:#D8D2E1;--border-color:#000500;
 BlazingRogue|--base-color:#F3752B;--progress-color:#FBFEF9;--progress-base:#000004;--learned-color:#0C6291;--learning-color:#A63446;--text-color:#FBFEF9;--border-color:#7E1946;
-Bubblegum|--base-color:#8BE8CF;--progress-color:#DBB6C0;--progress-base:#69E0C1;--learned-color:#B87788;--learning-color:#BD8C99;--text-color:#F0678C;--border-color:#B5919A;
+Wood|--base-color:#9C755C;--progress-color:#C49B80;--progress-base:#A68874;--learned-color:#64859C;--learning-color:#D9B69E;--text-color:#DBD2CC;--border-color:#7D6454;
+Swamp|--base-color:#6B733E;--progress-color:#2705EB;--progress-base:#8477D4;--learned-color:#E4E6DA;--learning-color:#CED1BC;--text-color:#CBD1A7;--border-color:#8C9E26;

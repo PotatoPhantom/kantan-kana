@@ -49,13 +49,14 @@
 
 :root {
   --english-font: arial;
-  --english-size: 72px;
-  --japanese-font: notosans-thin, sans-serif;
-  --japanese-size: 144px;
+  --english-size: 6em;
+  --japanese-font: mini-wakuwaku, sans-serif;
+  --japanese-size: 12em;
 }
 
 body {
   background-color: var(--base-color);
+  font-size: 0.6vw;
 }
 
 .unselectable {
@@ -72,10 +73,10 @@ body {
   font-size: var(--english-size);
   font-family: var(--english-font);
   display: inline-flex;
-  height: 192px;
-  width: 192px;
+  height: 2em;
+  width: 2em;
   border-radius: 50%;
-  border: 12px solid;
+  border: 0.15em solid;
   border-color: var(--border-color);
   align-items: center;
   outline: none;
@@ -92,8 +93,8 @@ body {
 .correct-circle {
   text-align: center;
   display: table;
-  height: 50px;
-  width: 50px;
+  height: 4em;
+  width: 4em;
   border-radius: 50%;
   border: 4px solid var(--border-color);
   align-items: center;
@@ -110,9 +111,9 @@ body {
   text-align: center;
   font-size: var(--japanese-size);
   font-family: var(--japanese-font);
-  display: block;
-  height: 288px;
-  width: 288px;
+  display: inline-block;
+  height: 1em;
+  width: 1em;
   border: none;
   align-items: center;
   outline: none;
@@ -120,8 +121,8 @@ body {
   background-color: var(--base-color);
   position: absolute;
   left: 50%;
-  top: 45%;
-  transform: translate(-50%,-50%);
+  top: 40%;
+  transform: translate(-50%, 0%);
   transition-property: color, transform;
   transition-duration: 0.25s, 0.5s;
 }
@@ -152,12 +153,18 @@ body {
   transition-duration: 1s;
 }
 
+#arrow {
+  left: 0;
+  bottom: 0;
+  position: absolute;
+}
+
 #settings {
   align-items: center;
-  transform: translate(-50%,-50%);
-  right: -48px;
-  bottom: -48px;
+  right: 0;
+  bottom: 0;
   position: absolute;
+  z-index: 2000;
 }
 
 .hover_background{
@@ -210,7 +217,7 @@ body {
 }
 
 #themeList, #englishFontList, #japaneseFontList {
-  font-size: 32px;
+  font-size: 2.5em;
   font-family: var(--english-font);
   position: absolute;
   top: 20%;
@@ -224,16 +231,16 @@ body {
   transform: translate(-50%,-50%);
 }
 
-#themeList, #themeListText {left: 15%;}
-#englishFontList, #englishFontListText, #englishSize {left: 50%;}
-#japaneseFontList, #japaneseFontListText, #japaneseSize {left: 85%;}
+.settingsLeft {left: 15%;}
+.settingsMiddle {left: 50%;}
+.settingsRight {left: 85%;}
 
 .slider {
   -webkit-appearance: none;
   appearance: none;
   outline: none;
   border-radius: 0px;
-  height: 25px;
+  height: 2em;
   position: absolute;
   transform: translate(-50%,-50%);
   top: 30%;
@@ -243,30 +250,78 @@ body {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 25px;
-  height: 25px;
+  width: 2em;
+  height: 2em;
   background: var(--progress-color);
   cursor: pointer;
   border-radius: 0px;
 }
 
 .slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
+  width: 2em;
+  height: 2em;
   background: var(--progress-color);
   cursor: pointer;
   border-radius: 0px;
 }
 
 #version {
-  bottom: 3%;
-  right: 3%;
+  bottom: 1em;
+  right: 1em;
+  font-size: 1em;
+  transform: translate(-50%,-50%);
 }
 
 .settings {
   color: var(--text-color);
-  font-family: var(--english-font);
+  font-family: var(--japanese-font), var(--english-font);
   position: absolute;
+}
+
+#menu {
+  width: 100%;
+  height: 100%;
+  background-color: var(--base-color);
+  z-index: 1000;
+  position: absolute;
+  text-align: center;
+  align-items: center;
+  display: inline-block;
+  justify-content: center;
+  margin: auto;
+  left: 0px;
+  top: 0px;
+}
+
+#title {
+  left: 50%;
+  top: 20%;
+  font-size: 7.5em;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  font-family: var(--english-font), var(--japanese-font);
+  color: var(--text-color);
+}
+
+.start-button {
+  font-family: var(--english-font), var(--japanese-font);
+  font-size: 6em;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  left: 50%;
+  border-radius: 1%;
+  border: 10px solid var(--border-color);
+  color: var(--text-color);
+  padding: 1%;
+  outline: none;
+}
+
+#hiragana-start {
+  top: 50%;
+}
+
+#katakana-start {
+  top: 75%;
 }
 
 #loading {
@@ -279,4 +334,58 @@ body {
   top: 0px;
   transition-property: opacity;
   transition-duration: 1s;
+}
+
+#correctRequiredText {
+  top: 35%;
+  color: var(--text-color);
+  transform: translate(-50%,-50%);
+}
+
+#correctRequired {
+  top: 50%;
+  font-size: 2.5em;
+  font-family: var(--english-font);
+  position: absolute;
+  transform: translate(-50%,-50%);
+}
+
+#hiragana_table, #katakana_table {
+  top: 3em;
+  font-size: 2em;
+  position: absolute;
+  z-index: 1500;
+}
+
+.combo_table {
+  font-size: 2em;
+  position: absolute;
+  bottom: 8em;
+  z-index: 1500;
+}
+
+#hiragana_table, #hiragana_combo {
+  left: 2%;
+  text-align: left;
+}
+
+#katakana_table, #katakana_combo {
+  right: 2%;
+  text-align: right;
+}
+
+.kana {
+  font-family: var(--japanese-font);
+  color: var(--text-color);
+}
+
+.romaji, .english {
+  font-family: var(--english-font);
+  color: var(--text-color);
+}
+
+#reset {
+  bottom: 1em;
+  left: 1em;
+  position: absolute;
 }
