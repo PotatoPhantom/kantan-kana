@@ -351,7 +351,7 @@ body {
 }
 
 #hiragana_table, #katakana_table {
-  top: 3em;
+  top: 2.5em;
   font-size: 2em;
   position: absolute;
   z-index: 1500;
@@ -360,7 +360,7 @@ body {
 .combo_table {
   font-size: 2em;
   position: absolute;
-  bottom: 8em;
+  bottom: 5em;
   z-index: 1500;
 }
 
