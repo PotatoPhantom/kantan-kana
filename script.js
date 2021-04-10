@@ -326,19 +326,22 @@ function loadProgress() {
     }
   }
 
-  if (hiragana_started) {
-    var width_percent = learned_hiragana.length / Object.keys(hiragana_list).length * 100;
-  } else {
-    var width_percent = learned_katakana.length / Object.keys(katakana_list).length * 100;
-  }
-
   if (learned_hiragana.length > 46 || learned_katakana.length > 46) {
     learned_hiragana = Array.from(new Set(learned_hiragana));
     learned_katakana = Array.from(new Set(learned_katakana));
   }
 
-  $("#progress").css("width", width_percent + "%");
-  $(".romaji").css('opacity', (0.7 - width_percent / 200) + "");
+  var hiragana_percent = learned_hiragana.length / Object.keys(hiragana_list).length * 100;
+  var katakana_percent = learned_katakana.length / Object.keys(katakana_list).length * 100;
+
+  if (hiragana_started) {
+    $("#progress").css("width", hiragana_percent + "%");
+  } else {
+    $("#progress").css("width", katakana_percent + "%");
+  }
+
+  $(".romajih").css('opacity', (0.7 - hiragana_percent / 200) + "");
+  $(".romajik").css('opacity', (0.7 - katakana_percent / 200) + "");
 }
 
 async function answer(number) {

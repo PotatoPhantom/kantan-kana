@@ -454,7 +454,7 @@ body {
   opacity: 0.9;
 }
 
-.romaji, .english {
+.romajih, .romajik, .english {
   font-family: var(--english-font);
   color: var(--text-color);
   margin: 1%;
