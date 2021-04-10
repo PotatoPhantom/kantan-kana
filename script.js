@@ -21,6 +21,7 @@ var hiragana_started = true;
 var root_element = document.querySelector(':root');
 
 var correct_required = 9;
+var sound_volume = 0.8;
 
 function getRootValue(rkey) {
   var styles = getComputedStyle(root_element);
@@ -33,8 +34,10 @@ function setRootValue(rkey, rvalue) {
 
 function playSound(sound_name) {
   var audio = new Audio('audio/' + sound_name + '.mp3');
-  audio.volume = 0.8;
-  audio.play();
+  audio.volume = sound_volume;
+  if (sound_volume > 0) {
+    audio.play();
+  }
 }
 
 function hideTables() {
@@ -75,6 +78,7 @@ function startHiragana() {
   }
   loadLearned();
   reset();
+  $("#information").hide();
   $("#menu").hide();
   hideTables();
 }
@@ -87,8 +91,14 @@ function startKatakana() {
   }
   loadLearned();
   reset();
+  $("#information").hide();
   $("#menu").hide();
   hideTables();
+}
+
+function openInformation() {
+  $("#information").show();
+  $("#menu").hide();
 }
 
 function setTheme(theme_name) {
@@ -129,7 +139,7 @@ function setEnglishFont(font_name) {
 function setEnglishFontSize(size_unknown) {
   var size = Math.round(size_unknown);
   if (size == 0 || size > 12) {
-    size = 6;
+    size = 10;
   }
   setRootValue("--english-size", size + "em");
   setCookie("en_font_size", "" + size, 365);
@@ -147,8 +157,8 @@ function setJapaneseFont(font_name) {
 
 function setJapaneseFontSize(size_unknown) {
   var size = Math.round(size_unknown);
-  if (size == 0 || size > 20) {
-    size = 12;
+  if (size == 0 || size > 24) {
+    size = 20;
   }
   setRootValue("--japanese-size", size + "em");
   setCookie("jp_font_size", "" + size, 365);
@@ -168,6 +178,17 @@ function setReqCorrect(required_unknown) {
   $("#correctRequired").val(new_required);
 }
 
+function setVolume(volume_unknown) {
+  var new_volume = parseFloat(volume_unknown);
+  if (isNaN(new_volume) || new_volume > 1 || new_volume < 0) {
+    new_volume = 0.8;
+  }
+  sound_volume = new_volume;
+  setCookie("volume", "" + new_volume, 365);
+  $("#volume").val(new_volume);
+  $("#volumeText").text("Volume: " + Math.round(new_volume * 100) + "%");
+}
+
 function refreshTables() {
   var kana_check = Object.keys(kana_romaji);
   for (let i = 0; i < kana_check.length; i++) {
@@ -182,11 +203,11 @@ function updateTable(kana_character) {
   } else if (kana_character in learning_hiragana || kana_character in learning_katakana) {
     root_color = "--learning-color";
   }
-  $("span").filter(function() { return ($(this).text() === ' ' + kana_character + ' ') }).css("color", getRootValue(root_color));
+  $("span").filter(function() { return ($(this).text() === kana_character) }).css("color", getRootValue(root_color));
   if (Object.keys(voiced_kana).includes(kana_character)) {
     kana_check = voiced_kana[kana_character];
     for (let i = 0; i < kana_check.length; i++) {
-      $("span").filter(function() { return ($(this).text() === ' ' + kana_check.charAt(i) + ' ') }).css("color", getRootValue(root_color));
+      $("span").filter(function() { return ($(this).text() === kana_check.charAt(i)) }).css("color", getRootValue(root_color));
     }
   }
   else if (kana_character == 'や') {$("span:contains(ゃ)").css("color", getRootValue(root_color));}
@@ -311,8 +332,13 @@ function loadProgress() {
     var width_percent = learned_katakana.length / Object.keys(katakana_list).length * 100;
   }
 
+  if (learned_hiragana.length > 46 || learned_katakana.length > 46) {
+    learned_hiragana = Array.from(new Set(learned_hiragana));
+    learned_katakana = Array.from(new Set(learned_katakana));
+  }
+
   $("#progress").css("width", width_percent + "%");
-  $(".romaji").css('opacity', (1 - width_percent / 200) + "");
+  $(".romaji").css('opacity', (0.8 - width_percent / 200) + "");
 }
 
 async function answer(number) {
@@ -500,7 +526,7 @@ function loadLearned() {
 
 function genReqCircles() {
   for(let i = 1; i <= correct_required; i++) {
-    var left = (50 - correct_required / 2 * 4 - 2) + (4 * i);
+    var left = (50 - correct_required / 2 * 5 - 3) + (5 * i);
     $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
   }
 }
@@ -531,6 +557,7 @@ $(document).ready(function() {
       $('.hover_background').hide();
   });
   $("#arrow").click(function(){
+     $('#information').hide();
      $('#menu').show();
      showTables();
   });
@@ -575,6 +602,10 @@ $(document).ready(function() {
      setReqCorrect(this.value);
      return false;
   };
+  document.getElementById("volume").oninput = function() {
+     setVolume(this.value);
+     return false;
+  };
 
   startClearCheck();
   loadingScreen();
@@ -609,5 +640,6 @@ $.get("themes.txt", function(text) {
   setJapaneseFont(getCookie("jp_font"));
   setJapaneseFontSize(getCookie("jp_font_size"));
   setReqCorrect(getCookie("required"));
+  setVolume(getCookie("volume"));
   refreshTables();
 });
