@@ -22,6 +22,7 @@ var root_element = document.querySelector(':root');
 
 var correct_required = 9;
 var sound_volume = 0.8;
+var delay = 1;
 
 function getRootValue(rkey) {
   var styles = getComputedStyle(root_element);
@@ -187,6 +188,17 @@ function setVolume(volume_unknown) {
   setCookie("volume", "" + new_volume, 365);
   $("#volume").val(new_volume);
   $("#volumeText").text("Volume: " + Math.round(new_volume * 100) + "%");
+}
+
+function setDelay(delay_unknown) {
+  var new_delay = parseFloat(delay_unknown);
+  if (isNaN(new_delay) || new_delay > 1 || new_delay < 0) {
+    new_delay = 1;
+  }
+  delay = new_delay;
+  setCookie("delay", "" + new_delay, 365);
+  $("#delay").val(new_delay);
+  $("#delayText").text("Delay: " + new_delay + "s");
 }
 
 function refreshTables() {
@@ -384,10 +396,12 @@ async function answer(number) {
     playSound(guess);
     loadProgress();
 
-    $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
-    await sleep(250);
-    $("#question").css("transform", "translate(-50%,-50%)");
-    await sleep(750);
+    if (delay > 0) {
+      $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
+      await sleep(delay * 250);
+      $("#question").css("transform", "translate(-50%,-50%)");
+      await sleep(delay * 750);
+    }
     reset();
   } else {
     failed = true;
@@ -609,6 +623,10 @@ $(document).ready(function() {
      setVolume(this.value);
      return false;
   };
+  document.getElementById("delay").oninput = function() {
+     setDelay(this.value);
+     return false;
+  };
 
   startClearCheck();
   loadingScreen();
@@ -644,5 +662,6 @@ $.get("themes.txt", function(text) {
   setJapaneseFontSize(getCookie("jp_font_size"));
   setReqCorrect(getCookie("required"));
   setVolume(getCookie("volume"));
+  setDelay(getCookie("delay"));
   refreshTables();
 });

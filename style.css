@@ -401,7 +401,7 @@ body {
   transition-duration: 1s;
 }
 
-#correctRequiredText, #volumeText {
+#correctRequiredText, #volumeText, #delayText {
   top: 35%;
   font-size: 3em;
   color: var(--text-color);
