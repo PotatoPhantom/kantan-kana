@@ -451,7 +451,7 @@ body {
 .kana {
   font-family: var(--japanese-font);
   color: var(--text-color);
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .romaji, .english {

@@ -338,7 +338,7 @@ function loadProgress() {
   }
 
   $("#progress").css("width", width_percent + "%");
-  $(".romaji").css('opacity', (0.8 - width_percent / 200) + "");
+  $(".romaji").css('opacity', (0.7 - width_percent / 200) + "");
 }
 
 async function answer(number) {
