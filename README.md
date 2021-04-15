@@ -1,2 +1,2 @@
 # Kantan Kana
-A work in progress website with a goal of emulating the same learning experience as the Hiragana and Katakana Pro apps.
+A work in progress website with a goal of making an effective kana learning experience.
