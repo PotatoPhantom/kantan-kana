@@ -39,9 +39,9 @@ function setRootValue(rkey, rvalue) {
 }
 
 function playSound(sound_name) {
-  var audio = new Audio('audio/' + sound_name + '.mp3');
-  audio.volume = sound_volume;
   if (sound_volume > 0) {
+    var audio = new Audio('audio/' + sound_name + '.mp3');
+    audio.volume = sound_volume;
     audio.play();
   }
 }
@@ -103,7 +103,11 @@ function openInformation() {
   $("#menu").hide();
 }
 
-function setTheme(theme_name) {
+async function setTheme(theme_name, not_first = true) {
+  loadScreen();
+  if (not_first) {
+    await sleep(500);
+  }
   if (theme_name == "" || !(Object.keys(themes).includes(theme_name))) {
     theme_name = Object.keys(themes)[0];
   }
@@ -126,7 +130,7 @@ function setTheme(theme_name) {
   reset();
   startClearCheck();
   refreshTables();
-  loadingScreen();
+  hideScreen();
 }
 
 function setEnglishFont(font_name) {
@@ -418,8 +422,6 @@ async function answer(number) {
     } else if (isLearned(question)) {
       setLearning(question, correct_required - 1);
       removeLearned(question);
-    } else {
-      alert("oh no");
     }
 
     loadProgress();
@@ -581,7 +583,7 @@ $(document).ready(function() {
   });
   $("#reset").click(function(){
      if (confirm("Would you like to reset your progress? 1/5") && confirm("Are you sure you want to reset your progress? 2/5") && confirm("All your progress so far will be erased! 3/5") && confirm("Your progress cannot be recovered! 4/5") && confirm("Pressing OK will finally delete all your progress... 5/5")) {
-       loadingScreen();
+       loadScreen();
        learned_hiragana = [];
        learned_katakana = [];
        learning_hiragana = {};
@@ -642,13 +644,16 @@ $(document).ready(function() {
   refreshTables();
 });
 
-async function loadingScreen() {
+async function loadScreen() {
   $("#loading").show();
-  await sleep(200);
-  $("#loading").css("opacity", "0");
-  await sleep(800);
-  $("#loading").hide();
   $("#loading").css("opacity", "1");
+}
+
+async function hideScreen() {
+  await sleep(50);
+  $("#loading").css("opacity", "0");
+  await sleep(450);
+  $("#loading").hide();
 }
 
 $.get("themes.txt", function(text) {
@@ -661,5 +666,5 @@ $.get("themes.txt", function(text) {
       $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
     }
   }
-  setTheme(getCookie("theme"));
+  setTheme(getCookie("theme"), false);
 });

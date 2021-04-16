@@ -54,6 +54,12 @@
   --japanese-size: 12em;
 }
 
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body {
   background-color: var(--base-color);
   font-size: calc(0.3vw + 0.3vh + .15vmin);
@@ -61,11 +67,6 @@ body {
 
 @media (orientation:landscape) {
   #menu {
-    gap: 1em;
-    display: grid;
-    width: 100vw;
-    height: 100vh;
-    padding: 1%;
     grid-template-areas:
       'hiragana hiragana . title . katakana katakana'
       'hiragana hiragana . information . katakana katakana'
@@ -80,11 +81,6 @@ body {
 
 @media (orientation:portrait) {
   #menu {
-    gap: 1em;
-    display: grid;
-    width: 100vw;
-    height: 100vh;
-    padding: 1%;
     grid-template-areas:
       'title'
       'information'
@@ -324,6 +320,9 @@ body {
 }
 
 #menu {
+  gap: 1em;
+  display: grid;
+  padding: 1%;
   width: 100%;
   height: 100%;
   background-color: var(--base-color);
@@ -338,8 +337,6 @@ body {
 
 #information {
   display: grid;
-  width: 100vw;
-  height: 100vh;
   width: 100%;
   height: 100%;
   background-color: var(--base-color);
@@ -398,7 +395,7 @@ body {
   left: 0;
   top: 0;
   transition-property: opacity;
-  transition-duration: 1s;
+  transition-duration: 0.5s;
 }
 
 #correctRequiredText, #volumeText, #delayText {
@@ -429,18 +426,12 @@ body {
 
 #hiragana_table, #hiragana_combo {
   display: grid;
-  text-align: left;
+  text-align: center;
 }
 
 #katakana_table, #katakana_combo {
   display: grid;
-  text-align: right;
-}
-
-*, *:after, *:before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+  text-align: center;
 }
 
 #hiragana_table {grid-area: hiragana;}
