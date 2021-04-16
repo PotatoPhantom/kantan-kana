@@ -1,3 +1,8 @@
+// TODO >>> Add audio when clicking on kana tables
+// TODO >>> Add option to change max card limit and hide card progress
+// TODO >>> Easter Eggs?
+// I regret typing both of those by hand.
+
 var kana_parse = "あアa:いイi:うウu:えエe:おオo:かカka:きキki:くクku:けケke:こコko:さサsa:しシshi:すスsu:せセse:そソso:たタta:ちチchi:つツtsu:てテte:とトto:なナna:にニni:ぬヌnu:ねネne:のノno:はハha:ひヒhi:ふフfu:へヘhe:ほホho:まマma:みミmi:むムmu:めメme:もモmo:やヤya:ゆユyu:よヨyo:らラra:りリri:るルru:れレre:ろロro:わワwa:をヲwo:んンn".split(":");
 
 var kana_romaji = {};
@@ -71,12 +76,7 @@ function startClearCheck() {
   }
 }
 
-function startHiragana() {
-  hiragana_started = true;
-  unlearned = [];
-  for (let i = 0; i < hiragana_list.length; i++) {
-    unlearned.push(hiragana_list[i]);
-  }
+function onStart() {
   loadLearned();
   reset();
   $("#information").hide();
@@ -84,17 +84,18 @@ function startHiragana() {
   hideTables();
 }
 
+function startHiragana() {
+  hiragana_started = true;
+  unlearned = [];
+  unlearned.push(...hiragana_list);
+  onStart();
+}
+
 function startKatakana() {
   hiragana_started = false;
   unlearned = [];
-  for (let i = 0; i < katakana_list.length; i++) {
-    unlearned.push(katakana_list[i]);
-  }
-  loadLearned();
-  reset();
-  $("#information").hide();
-  $("#menu").hide();
-  hideTables();
+  unlearned.push(...katakana_list);
+  onStart();
 }
 
 function openInformation() {
@@ -580,7 +581,6 @@ $(document).ready(function() {
   });
   $("#reset").click(function(){
      if (confirm("Would you like to reset your progress? 1/5") && confirm("Are you sure you want to reset your progress? 2/5") && confirm("All your progress so far will be erased! 3/5") && confirm("Your progress cannot be recovered! 4/5") && confirm("Pressing OK will finally delete all your progress... 5/5")) {
-       // Literally everything I can think of
        loadingScreen();
        learned_hiragana = [];
        learned_katakana = [];
@@ -629,12 +629,22 @@ $(document).ready(function() {
   };
 
   startClearCheck();
-  loadingScreen();
+  for(let i = 3; i <= 10; i++) {
+    $('<option value=' + i + '>' + i + '</option>').appendTo("#correctRequired");
+  }
+  setEnglishFont(getCookie("en_font"));
+  setEnglishFontSize(getCookie("en_font_size"));
+  setJapaneseFont(getCookie("jp_font"));
+  setJapaneseFontSize(getCookie("jp_font_size"));
+  setReqCorrect(getCookie("required"));
+  setVolume(getCookie("volume"));
+  setDelay(getCookie("delay"));
+  refreshTables();
 });
 
 async function loadingScreen() {
   $("#loading").show();
-  await sleep(100);
+  await sleep(200);
   $("#loading").css("opacity", "0");
   await sleep(800);
   $("#loading").hide();
@@ -651,17 +661,5 @@ $.get("themes.txt", function(text) {
       $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
     }
   }
-  for(let i = 3; i <= 10; i++) {
-    // The number of required correct multiplied by the number of kana, average time between answers in minutes. Adding about 1.5m to learn.
-    $('<option value=' + i + '>' + i + '</option>').appendTo("#correctRequired");
-  }
   setTheme(getCookie("theme"));
-  setEnglishFont(getCookie("en_font"));
-  setEnglishFontSize(getCookie("en_font_size"));
-  setJapaneseFont(getCookie("jp_font"));
-  setJapaneseFontSize(getCookie("jp_font_size"));
-  setReqCorrect(getCookie("required"));
-  setVolume(getCookie("volume"));
-  setDelay(getCookie("delay"));
-  refreshTables();
 });
