@@ -408,12 +408,20 @@ body {
   font-family: var(--english-font);
 }
 
-#maxCardsText {
+#maxCardsText, #hideProgressText {
   top: 60%;
   font-size: 3em;
   color: var(--text-color);
   transform: translate(-50%,-50%);
   font-family: var(--english-font);
+}
+
+#hideProgress {
+  -ms-transform: translate(-50%,-50%) scale(2);
+  -moz-transform: translate(-50%,-50%) scale(2);
+  -webkit-transform: translate(-50%,-50%) scale(2);
+  -o-transform: translate(-50%,-50%) scale(2);
+  transform: translate(-50%,-50%) scale(2);
 }
 
 #hiragana_table, #katakana_table {

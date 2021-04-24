@@ -1,9 +1,6 @@
-// TODO >>> Add audio when clicking on kana tables - Half Done
-// TODO >>> Hide card progress
-// TODO >>> Review only mode, combinations/voiced maybe?
-// TODO >>> Stats page and stuff
-// TODO >>> Export / Import?
-// TODO >>> Encoding?
+// TODO >>> Add audio when clicking on kana tables - Half Done (MEDIUM)
+// TODO >>> Stats (MEDIUM)
+// TODO >>> Export / Import? (LOW)
 
 var kana_parse = "あアa:いイi:うウu:えエe:おオo:かカka:きキki:くクku:けケke:こコko:さサsa:しシshi:すスsu:せセse:そソso:たタta:ちチchi:つツtsu:てテte:とトto:なナna:にニni:ぬヌnu:ねネne:のノno:はハha:ひヒhi:ふフfu:へヘhe:ほホho:まマma:みミmi:むムmu:めメme:もモmo:やヤya:ゆユyu:よヨyo:らラra:りリri:るルru:れレre:ろロro:わワwa:をヲwo:んンn".split(":");
 
@@ -153,6 +150,9 @@ function loadVariables() {
   setVolume(variables["volume"]);
   setDelay(variables["delay"]);
   setMaxCards(variables["max_cards"]);
+  setHideProgress(variables["hide_progress"]);
+  if (variables["correct_answers"] === undefined) variables["correct_answers"] = 0;
+  if (variables["incorrect_answers"] === undefined) variables["incorrect_answers"] = 0;
 
   saveVariables();
 }
@@ -226,6 +226,15 @@ function setMaxCards(cards_unknown) {
   variables['max_cards'] = cards;
   $("#maxCards").val(cards);
   $("#maxCardsText").text("Max Cards: " + cards);
+  saveVariables();
+}
+
+function setHideProgress(unknown) {
+  if (unknown === undefined) unknown = false;
+  variables['hide_progress'] = unknown;
+  $("#hideProgress").val(unknown);
+  genReqCircles();
+  loadProgress();
   saveVariables();
 }
 
@@ -377,9 +386,13 @@ function loadProgress() {
   } else {
     $("#progress").css("width", katakana_percent + "%");
   }
-
-  $(".romajih").css('opacity', (0.7 - hiragana_percent / 200) + "");
-  $(".romajik").css('opacity', (0.7 - katakana_percent / 200) + "");
+  if (variables["hide_progress"]) {
+    $(".romajih").css('opacity', (0.2 - hiragana_percent / 200) + "");
+    $(".romajik").css('opacity', (0.2 - katakana_percent / 200) + "");
+  } else {
+    $(".romajih").css('opacity', (0.7 - hiragana_percent / 200) + "");
+    $(".romajik").css('opacity', (0.7 - katakana_percent / 200) + "");
+  }
 }
 
 async function answer(number) {
@@ -397,6 +410,7 @@ async function answer(number) {
     }
 
     if (!failed) {
+      variables["correct_answers"]++;
       if (unlearned.includes(question)) {
         setLearning(question, 1);
         unlearned = removeItem(unlearned, question);
@@ -431,6 +445,7 @@ async function answer(number) {
     reset();
   } else {
     failed = true;
+    variables["incorrect_answers"]++;
     $("#answer" + number).css("opacity", "0.2");
     $("#answer" + number).prop('disabled', true);
 
@@ -582,9 +597,11 @@ function loadLearned() {
 
 function genReqCircles() {
   $(".correct-circle").remove();
-  for(let i = 1; i <= variables['correct_required']; i++) {
-    var left = (50 - variables['correct_required'] / 2 * 5 - 3) + (5 * i);
-    $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
+  if (!variables["hide_progress"]) {
+    for(let i = 1; i <= variables['correct_required']; i++) {
+      var left = (50 - variables['correct_required'] / 2 * 5 - 3) + (5 * i);
+      $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
+    }
   }
 }
 
@@ -675,6 +692,10 @@ $(document).ready(function() {
   };
   document.getElementById("maxCards").oninput = function() {
      setMaxCards(this.value);
+     return false;
+  };
+  document.getElementById("hideProgress").onchange = function() {
+     setHideProgress(this.checked);
      return false;
   };
 
