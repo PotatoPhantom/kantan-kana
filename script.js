@@ -152,6 +152,8 @@ function loadVariables() {
   setVolume(variables["volume"]);
   setDelay(variables["delay"]);
   setMaxCards(variables["max_cards"]);
+
+  saveVariables();
 }
 
 function setEnglishFont(font_name) {
