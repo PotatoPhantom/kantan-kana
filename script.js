@@ -135,6 +135,7 @@ async function setTheme(theme_name, not_first = true) {
 }
 
 function saveVariables() {
+  if (Object.keys(variables) < 8) return;
   setCookie("variables", JSON.stringify(variables), 365);
 }
 
@@ -588,7 +589,6 @@ function genReqCircles() {
 }
 
 $(document).ready(function() {
-
   for (let i = 0; i < kana_parse.length; i++) {
     let parse = kana_parse[i];
     let hiragana = parse[0];
@@ -601,6 +601,8 @@ $(document).ready(function() {
     hiragana_list.push(hiragana);
     katakana_list.push(katakana);
   }
+
+  loadVariables();
 
   loadLearned();
 
@@ -676,13 +678,24 @@ $(document).ready(function() {
      return false;
   };
 
-  loadVariables();
-
   startClearCheck();
   for(let i = 3; i <= 10; i++) {
     $('<option value=' + i + '>' + i + '</option>').appendTo("#correctRequired");
   }
   refreshTables();
+
+  $.get("themes.txt", function(text) {
+    theme_parse = text.split("\n");
+    for (let i = 0; i < theme_parse.length; i++) {
+      var theme = theme_parse[i];
+      if (theme_parse[i].includes("|")) {
+        var pieces = theme.split("|");
+        themes[pieces[0]] = pieces[1];
+        $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
+      }
+    }
+    setTheme(variables["theme"], false);
+  });
 });
 
 async function loadScreen() {
@@ -696,16 +709,3 @@ async function hideScreen() {
   await sleep(450);
   $("#loading").hide();
 }
-
-$.get("themes.txt", function(text) {
-  theme_parse = text.split("\n");
-  for (let i = 0; i < theme_parse.length; i++) {
-    var theme = theme_parse[i];
-    if (theme_parse[i].includes("|")) {
-      var pieces = theme.split("|");
-      themes[pieces[0]] = pieces[1];
-      $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
-    }
-  }
-  setTheme(variables["theme"], false);
-});
