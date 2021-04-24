@@ -1,7 +1,9 @@
-// TODO >>> Add audio when clicking on kana tables
-// TODO >>> Add option to change max card limit and hide card progress
-// TODO >>> Easter Eggs?
-// I regret typing both of those by hand.
+// TODO >>> Add audio when clicking on kana tables - Half Done
+// TODO >>> Hide card progress
+// TODO >>> Review only mode, combinations/voiced maybe?
+// TODO >>> Stats page and stuff
+// TODO >>> Export / Import?
+// TODO >>> Encoding?
 
 var kana_parse = "あアa:いイi:うウu:えエe:おオo:かカka:きキki:くクku:けケke:こコko:さサsa:しシshi:すスsu:せセse:そソso:たタta:ちチchi:つツtsu:てテte:とトto:なナna:にニni:ぬヌnu:ねネne:のノno:はハha:ひヒhi:ふフfu:へヘhe:ほホho:まマma:みミmi:むムmu:めメme:もモmo:やヤya:ゆユyu:よヨyo:らラra:りリri:るルru:れレre:ろロro:わワwa:をヲwo:んンn".split(":");
 
@@ -25,9 +27,7 @@ var hiragana_started = true;
 
 var root_element = document.querySelector(':root');
 
-var correct_required = 9;
-var sound_volume = 0.8;
-var delay = 1;
+var variables = {}
 
 function getRootValue(rkey) {
   var styles = getComputedStyle(root_element);
@@ -39,9 +39,9 @@ function setRootValue(rkey, rvalue) {
 }
 
 function playSound(sound_name) {
-  if (sound_volume > 0) {
+  if (variables['volume'] > 0) {
     var audio = new Audio('audio/' + sound_name + '.mp3');
-    audio.volume = sound_volume;
+    audio.volume = variables['volume'];
     audio.play();
   }
 }
@@ -122,7 +122,7 @@ async function setTheme(theme_name, not_first = true) {
     }
   }
 
-  setCookie("theme", theme_name, 365);
+  variables["theme"] = theme_name;
   $("#themeList").val(theme_name);
 
   loadProgress();
@@ -131,86 +131,104 @@ async function setTheme(theme_name, not_first = true) {
   startClearCheck();
   refreshTables();
   hideScreen();
+  saveVariables();
+}
+
+function saveVariables() {
+  setCookie("variables", JSON.stringify(variables), 365);
+}
+
+function loadVariables() {
+  var saved_variables = getCookie("variables");
+  if (saved_variables != "") {
+    variables = JSON.parse(saved_learning);
+  }
+
+  setEnglishFont(variables["en_font"]);
+  setEnglishFontSize(variables["en_font_size"]);
+  setJapaneseFont(variables["jp_font"]);
+  setJapaneseFontSize(variables["jp_font_size"]);
+  setReqCorrect(variables["correct_required"]);
+  setVolume(variables["volume"]);
+  setDelay(variables["delay"]);
+  setMaxCards(variables["max_cards"]);
 }
 
 function setEnglishFont(font_name) {
-  if (font_name == "") {
-    font_name = 'arial';
-  }
+  if (font_name == "" || font_name === undefined) font_name = 'arial';
   setRootValue("--english-font", font_name + ", sans-serif");
-  setCookie("en_font", font_name, 365);
+  variables["en_font"] = font_name;
   $("#englishFontList").val(font_name);
+  saveVariables();
 }
 
 function setEnglishFontSize(size_unknown) {
   var size = Math.round(size_unknown);
-  if (size == 0 || size > 12) {
-    size = 10;
-  }
+  if (size == 0 || size > 12 || size_unknown === undefined) size = 10;
   setRootValue("--english-size", size + "em");
-  setCookie("en_font_size", "" + size, 365);
+  variables["en_font_size"] = size;
   $("#englishSize").val(size);
+  saveVariables();
 }
 
 function setJapaneseFont(font_name) {
-  if (font_name == "") {
-    font_name = 'mini-wakuwaku';
-  }
+  if (font_name == "" || font_name === undefined) font_name = 'mini-wakuwaku';
   setRootValue("--japanese-font", font_name + ", sans-serif");
-  setCookie("jp_font", font_name, 365);
+  variables["jp_font"] = font_name;
   $("#japaneseFontList").val(font_name);
+  saveVariables();
 }
 
 function setJapaneseFontSize(size_unknown) {
   var size = Math.round(size_unknown);
-  if (size == 0 || size > 24) {
-    size = 20;
-  }
+  if (size == 0 || size > 24 || size_unknown === undefined) size = 20;
   setRootValue("--japanese-size", size + "em");
-  setCookie("jp_font_size", "" + size, 365);
+  variables["jp_font_size"] = size;
   $("#japaneseSize").val(size);
+  saveVariables();
 }
 
 function setReqCorrect(required_unknown) {
   var new_required = Math.round(required_unknown);
-  if (new_required <= 1 || new_required > 10) {
-    new_required = 9;
-  }
-  correct_required = new_required;
-  $(".correct-circle").remove();
+  if (new_required <= 1 || new_required > 10 || required_unknown === undefined) new_required = 9;
+  variables['correct_required'] = new_required;
   genReqCircles();
   loadProgress();
-  setCookie("required", "" + new_required, 365);
   $("#correctRequired").val(new_required);
+  $("#correctRequiredText").text("Correct Required: " + new_required);
+  saveVariables();
 }
 
 function setVolume(volume_unknown) {
   var new_volume = parseFloat(volume_unknown);
-  if (isNaN(new_volume) || new_volume > 1 || new_volume < 0) {
-    new_volume = 0.8;
-  }
-  sound_volume = new_volume;
-  setCookie("volume", "" + new_volume, 365);
+  if (isNaN(new_volume) || new_volume > 1 || new_volume < 0 || volume_unknown === undefined) new_volume = 0.8;
+  variables['volume'] = new_volume;
   $("#volume").val(new_volume);
   $("#volumeText").text("Volume: " + Math.round(new_volume * 100) + "%");
+  saveVariables();
 }
 
 function setDelay(delay_unknown) {
   var new_delay = parseFloat(delay_unknown);
-  if (isNaN(new_delay) || new_delay > 1 || new_delay < 0) {
-    new_delay = 1;
-  }
-  delay = new_delay;
-  setCookie("delay", "" + new_delay, 365);
+  if (isNaN(new_delay) || new_delay > 1 || new_delay < 0 || delay_unknown === undefined) new_delay = 1;
+  variables['delay'] = new_delay;
   $("#delay").val(new_delay);
   $("#delayText").text("Delay: " + new_delay + "s");
+  saveVariables();
+}
+
+function setMaxCards(cards_unknown) {
+  var cards = Math.round(cards_unknown);
+  if (cards < 5 || cards > 10 || cards_unknown === undefined) cards = 5;
+  variables['max_cards'] = cards;
+  $("#maxCards").val(cards);
+  $("#maxCardsText").text("Max Cards: " + cards);
+  saveVariables();
 }
 
 function refreshTables() {
-  var kana_check = Object.keys(kana_romaji);
-  for (let i = 0; i < kana_check.length; i++) {
-    updateTable(kana_check[i]);
-  }
+  for (let i = 0; i < hiragana_list.length; i++) updateTable(hiragana_list[i]);
+  for (let i = 0; i < katakana_list.length; i++) updateTable(katakana_list[i]);
 }
 
 function updateTable(kana_character) {
@@ -255,6 +273,19 @@ function getCookie(cname) {
     }
   }
   return "";
+}
+
+function migrateCookies() {
+  var res = document.cookie;
+  var multiple = res.split(";");
+  for(var i = 0; i < multiple.length; i++) {
+    var key = multiple[i].split("=");
+    if (Object.keys(variables).includes(key[0])) {
+      if (isNaN(key[1])) variables[key[0]] = key[1];
+      else variables[key[0]] = parseFloat(key[1]);
+      document.cookie = key[0]+" =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
+    }
+  }
 }
 
 var randomProperty = function (obj) {
@@ -333,7 +364,7 @@ function currentKana() {
 function loadProgress() {
   var question = $("#question").text();
 
-  for (let i = 1; i <= correct_required; i++) {
+  for (let i = 1; i <= variables['correct_required']; i++) {
     if (isLearned(question)) {
       $("#correct" + i).css("background-color", getRootValue("--learned-color"));
     } else if (getLearning(question) !== undefined && getLearning(question) >= i) {
@@ -381,7 +412,7 @@ async function answer(number) {
         unlearned = removeItem(unlearned, question);
       } else if (question in currentLearning()) {
         setLearning(question, getLearning(question) + 1);
-        if (getLearning(question) >= correct_required) {
+        if (getLearning(question) >= variables['correct_required']) {
           removeLearning(question);
           addLearned(question);
         }
@@ -401,11 +432,11 @@ async function answer(number) {
     playSound(guess);
     loadProgress();
 
-    if (delay > 0) {
+    if (variables['delay'] > 0) {
       $("#question").css("transform", "translate(-50%,-50%) scale(1.1)");
-      await sleep(delay * 250);
+      await sleep(variables['delay'] * 250);
       $("#question").css("transform", "translate(-50%,-50%)");
-      await sleep(delay * 750);
+      await sleep(variables['delay'] * 750);
     }
     reset();
   } else {
@@ -420,7 +451,7 @@ async function answer(number) {
         setLearning(question, 0);
       }
     } else if (isLearned(question)) {
-      setLearning(question, correct_required - 1);
+      setLearning(question, variables['correct_required'] - 1);
       removeLearned(question);
     }
 
@@ -437,25 +468,40 @@ function reset() {
   $("#question").css("color", getRootValue("--text-color"));
   $("#question").css("transform", "translate(-50%,-50%)");
 
+  var current_question = $("#question").text();
   var new_question = unlearned[0];
+  var learning_length = Object.keys(currentLearning()).length;
+  var learned_length = currentLearned().length;
 
-  if (Object.keys(currentLearning()).length > 0 && Math.random() <= (0.2 * Object.keys(currentLearning()).length)) {
-    new_question = randomKey(currentLearning());
-  }
-  if (currentLearned().length > 0 && Math.random() <= (currentLearned.length * 0.25 / Object.keys(currentKana()).length)) {
-    new_question = currentLearned[Math.floor(Math.random() * currentLearned.length)];
-  }
-  while (new_question === $("#question").text() || new_question === undefined) {
-    if (unlearned.length > 0 && Object.keys(currentLearning()).length < 5 && Math.random() <= 0.5) {
-      new_question = unlearned[0];
-    } else if (Object.keys(currentLearning()).length > 1){
+  if (learned_length > 0 && Math.random() <= (0.05 + learned_length * 0.25 / Object.keys(currentKana()).length)) {
+    new_question = currentLearned()[Math.floor(Math.random() * learned_length)];
+    if (current_question === new_question && learning_length > 0) {
       new_question = randomKey(currentLearning());
-    } else if (currentLearned().length > 0){
-      new_question = currentLearned()[Math.floor(Math.random() * currentLearned().length)];
-    } else {
-      break;
+    }
+  } else if (learning_length > 0) {
+    new_question = randomKey(currentLearning());
+    if (current_question === new_question && learned_length > 0) {
+      new_question = currentLearned()[Math.floor(Math.random() * learned_length)];
+    } else if (current_question === new_question && unlearned.length > 0 && learning_length < variables['max_cards']) {
+      new_question = unlearned[0];
     }
   }
+  if (unlearned.length > 0 && learning_length > 0 && learning_length < variables['max_cards'] && Math.random() <= 1.0 / learning_length) {
+    new_question = unlearned[0];
+  }
+
+  if (current_question === new_question || new_question === undefined) {
+    if (learned_length > 0) new_question = currentLearned()[Math.floor(Math.random() * learned_length)];
+    else if (learning_length > 0) new_question = randomKey(currentLearning());
+    else if (unlearned.length > 0 && learning_length < variables['max_cards']) new_question = unlearned[0];
+
+    if (learning_length < 1 && unlearned.length < 1 && learned_length > 1) {
+      while (current_question === new_question) {
+        new_question = currentLearned()[Math.floor(Math.random() * learned_length)];
+      }
+    }
+  }
+
   $("#question").text(new_question);
   let correct = randomInt(1, 3)
   let correct_answer = kana_romaji[new_question];
@@ -545,8 +591,9 @@ function loadLearned() {
 }
 
 function genReqCircles() {
-  for(let i = 1; i <= correct_required; i++) {
-    var left = (50 - correct_required / 2 * 5 - 3) + (5 * i);
+  $(".correct-circle").remove();
+  for(let i = 1; i <= variables['correct_required']; i++) {
+    var left = (50 - variables['correct_required'] / 2 * 5 - 3) + (5 * i);
     $('<div style="left: ' + left + '%;" id="correct' + i + '" class="unselectable correct-circle"></div>').appendTo(".main");
   }
 }
@@ -597,6 +644,12 @@ $(document).ready(function() {
        window.location.reload();
      }
   });
+  $(".kana").click(function(){
+     var txt = $(this).text();
+     if (Object.keys(kana_romaji).includes(txt)) {
+       playSound(kana_romaji[txt]);
+     }
+  });
   document.getElementById("themeList").onchange = function() {
      setTheme(this.value);
      return false;
@@ -617,7 +670,7 @@ $(document).ready(function() {
      setJapaneseFontSize(this.value);
      return false;
   };
-  document.getElementById("correctRequired").onchange = function() {
+  document.getElementById("correctRequired").oninput = function() {
      setReqCorrect(this.value);
      return false;
   };
@@ -629,18 +682,18 @@ $(document).ready(function() {
      setDelay(this.value);
      return false;
   };
+  document.getElementById("maxCards").oninput = function() {
+     setMaxCards(this.value);
+     return false;
+  };
+
+  loadVariables();
+  if (getCookie("theme") != "") migrateCookies();
 
   startClearCheck();
   for(let i = 3; i <= 10; i++) {
     $('<option value=' + i + '>' + i + '</option>').appendTo("#correctRequired");
   }
-  setEnglishFont(getCookie("en_font"));
-  setEnglishFontSize(getCookie("en_font_size"));
-  setJapaneseFont(getCookie("jp_font"));
-  setJapaneseFontSize(getCookie("jp_font_size"));
-  setReqCorrect(getCookie("required"));
-  setVolume(getCookie("volume"));
-  setDelay(getCookie("delay"));
   refreshTables();
 });
 
@@ -666,5 +719,5 @@ $.get("themes.txt", function(text) {
       $('<option value="' + pieces[0] + '">' + pieces[0] + '</option>').appendTo("#themeList");
     }
   }
-  setTheme(getCookie("theme"), false);
+  setTheme(variables["theme"], false);
 });

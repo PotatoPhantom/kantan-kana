@@ -4,7 +4,7 @@
 <head>
   <title>Kantan Kana</title>
   <meta charset="UTF-8" />
-  <meta name="description" content="Simple and fast way to learn to read Hiragana and Katakana">
+  <meta name="description" content="Fast and simple way to learn to read Hiragana and Katakana">
   <meta name="keywords" content="Kana, Hiragana, Katakana, Kantan">
   <meta name="author" content="Phantom">
   <meta name="google-site-verification" content="Vdqu0JG1KSC92KPuAvksHw5L4zzI42BsWo9QsEBYKAI" />
@@ -325,7 +325,7 @@
         <div>
           <div class="closeSettings">&times;</div>
 
-          <h5 id="credits" class="settings">v2.1 developed by #Phantom0430<br><br>Art by Vantikay#4215<br>Tested by BlazingRogue#3284<br>Audio ripped from JapanesePod101<br>Based on Hiragana Pro</h5>
+          <h5 id="credits" class="settings">v3.0 developed by #Phantom0430<br><br>Art by Vantikay#4215<br>Tested by BlazingRogue#3284<br>Audio ripped from JapanesePod101<br>Based on Hiragana Pro</h5>
 
           <h1 id="themeListText" class="settings settingsLeft">Theme</h1>
           <select id="themeList" class="settingsLeft"></select>
@@ -357,15 +357,18 @@
 
           <input type="range" style="top: 20%;" step="0.5" min="6" max="12" value="10" class="slider settingsRight" id="englishSize">
           <input type="range" style="top: 20%;" step="1" min="12" max="24" value="20" class="slider settingsMiddle" id="japaneseSize">
-          
-          <h1 id="correctRequiredText" class="settings settingsLeft">Required Correct</h1>
-          <select id="correctRequired" class="settingsLeft"></select>
+
+          <h1 id="correctRequiredText" class="settings settingsLeft">Correct Required: 9</h1>
+          <input type="range" style="top: 45%; width: 15em;" step="1" min="3" max="10" value="9" class="slider settingsLeft" id="correctRequired">
 
           <h1 id="volumeText" class="settings settingsMiddle">Volume: 80%</h1>
           <input type="range" style="top: 45%; width: 15em;" step="0.01" min="0" max="1" value="0.8" class="slider settingsMiddle" id="volume">
 
           <h1 id="delayText" class="settings settingsRight">Delay: 1s</h1>
           <input type="range" style="top: 45%; width: 15em;" step="0.1" min="0" max="1" value="1" class="slider settingsRight" id="delay">
+
+          <h1 id="maxCardsText" class="settings settingsLeft">Max Cards: 5</h1>
+          <input type="range" style="top: 70%; width: 15em;" step="1" min="5" max="10" value="5" class="slider settingsLeft" id="maxCards">
 
           <img id="reset" draggable="false" style="opacity: 0.2;" class="unselectable" src="reset.png" width="64px" height="64px">
       </div>

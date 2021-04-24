@@ -67,6 +67,7 @@ body {
 
 @media (orientation:landscape) {
   #menu {
+    overflow-y:hidden;
     grid-template-areas:
       'hiragana hiragana . title . katakana katakana'
       'hiragana hiragana . information . katakana katakana'
@@ -81,6 +82,7 @@ body {
 
 @media (orientation:portrait) {
   #menu {
+    overflow-y:overflow;
     grid-template-areas:
       'title'
       'information'
@@ -169,7 +171,7 @@ body {
   width: 100%;
   padding: 1em;
   background: var(--progress-base);
-  position: absolute;
+  position: fixed;
   top: 10%;
   top: 0;
   left: 0;
@@ -194,15 +196,14 @@ body {
 #arrow {
   left: 0;
   bottom: 0;
-  position: absolute;
+  position: fixed;
   z-index: 20;
 }
 
 #settings {
-  align-items: center;
   right: 0;
   bottom: 0;
-  position: absolute;
+  position: fixed;
   z-index: 2000;
 }
 
@@ -327,7 +328,8 @@ body {
   height: 100%;
   background-color: var(--base-color);
   z-index: 1000;
-  position: absolute;
+  position: fixed;
+  overflow-x:hidden;
   text-align: center;
   align-items: center;
   margin: auto;
@@ -341,7 +343,7 @@ body {
   height: 100%;
   background-color: var(--base-color);
   z-index: 10;
-  position: absolute;
+  position: fixed;
   text-align: center;
   align-items: center;
   margin: 0;
@@ -391,7 +393,7 @@ body {
   height: 100%;
   background-color: black;
   z-index: 20000;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   transition-property: opacity;
@@ -406,12 +408,12 @@ body {
   font-family: var(--english-font);
 }
 
-#correctRequired {
-  top: 45%;
-  font-size: 2.5em;
-  font-family: var(--english-font);
-  position: absolute;
+#maxCardsText {
+  top: 60%;
+  font-size: 3em;
+  color: var(--text-color);
   transform: translate(-50%,-50%);
+  font-family: var(--english-font);
 }
 
 #hiragana_table, #katakana_table {
@@ -443,12 +445,13 @@ body {
   font-family: var(--japanese-font);
   color: var(--text-color);
   opacity: 0.9;
+  white-space:nowrap;
 }
 
 .romajih, .romajik, .english {
   font-family: var(--english-font);
   color: var(--text-color);
-  margin: 1%;
+  white-space:nowrap;
 }
 
 #reset {
