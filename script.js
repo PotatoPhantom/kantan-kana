@@ -141,7 +141,7 @@ function saveVariables() {
 function loadVariables() {
   var saved_variables = getCookie("variables");
   if (saved_variables != "") {
-    variables = JSON.parse(saved_learning);
+    variables = JSON.parse(saved_variables);
   }
 
   setEnglishFont(variables["en_font"]);
@@ -273,19 +273,6 @@ function getCookie(cname) {
     }
   }
   return "";
-}
-
-function migrateCookies() {
-  var res = document.cookie;
-  var multiple = res.split(";");
-  for(var i = 0; i < multiple.length; i++) {
-    var key = multiple[i].split("=");
-    if (Object.keys(variables).includes(key[0])) {
-      if (isNaN(key[1])) variables[key[0]] = key[1];
-      else variables[key[0]] = parseFloat(key[1]);
-      document.cookie = key[0]+" =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
-    }
-  }
 }
 
 var randomProperty = function (obj) {
@@ -688,7 +675,6 @@ $(document).ready(function() {
   };
 
   loadVariables();
-  if (getCookie("theme") != "") migrateCookies();
 
   startClearCheck();
   for(let i = 3; i <= 10; i++) {
