@@ -232,7 +232,7 @@ function setMaxCards(cards_unknown) {
 function setHideProgress(unknown) {
   if (unknown === undefined) unknown = false;
   variables['hide_progress'] = unknown;
-  $("#hideProgress").val(unknown);
+  $('#hideProgress').prop('checked', unknown);
   genReqCircles();
   loadProgress();
   saveVariables();
