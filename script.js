@@ -1,5 +1,3 @@
-// TODO >>> Add audio when clicking on kana tables - Half Done (MEDIUM)
-// TODO >>> Stats (MEDIUM)
 // TODO >>> Export / Import? (LOW)
 
 var kana_parse = "あアa:いイi:うウu:えエe:おオo:かカka:きキki:くクku:けケke:こコko:さサsa:しシshi:すスsu:せセse:そソso:たタta:ちチchi:つツtsu:てテte:とトto:なナna:にニni:ぬヌnu:ねネne:のノno:はハha:ひヒhi:ふフfu:へヘhe:ほホho:まマma:みミmi:むムmu:めメme:もモmo:やヤya:ゆユyu:よヨyo:らラra:りリri:るルru:れレre:ろロro:わワwa:をヲwo:んンn".split(":");
@@ -98,6 +96,12 @@ function startKatakana() {
 function openInformation() {
   $("#information").show();
   $("#menu").hide();
+  var correct = variables["correct_answers"];
+  var incorrect = variables["incorrect_answers"];
+  var total = correct + incorrect;
+  var percent = Math.round(correct / total * 100);
+  if (isNaN(percent)) percent = 100;
+  $("#answers").text("Answers: " + correct + " / " + total + " [" + percent + "%]");
 }
 
 async function setTheme(theme_name, not_first = true) {
@@ -233,6 +237,10 @@ function setHideProgress(unknown) {
   if (unknown === undefined) unknown = false;
   variables['hide_progress'] = unknown;
   $('#hideProgress').prop('checked', unknown);
+
+  if (unknown) $('#answers').hide();
+  else $('#answers').show();
+
   genReqCircles();
   loadProgress();
   saveVariables();
@@ -410,11 +418,11 @@ async function answer(number) {
     }
 
     if (!failed) {
-      variables["correct_answers"]++;
       if (unlearned.includes(question)) {
         setLearning(question, 1);
         unlearned = removeItem(unlearned, question);
       } else if (question in currentLearning()) {
+        variables["correct_answers"]++;
         setLearning(question, getLearning(question) + 1);
         if (getLearning(question) >= variables['correct_required']) {
           removeLearning(question);
@@ -653,10 +661,9 @@ $(document).ready(function() {
      }
   });
   $(".kana").click(function(){
-     var txt = $(this).text();
-     if (Object.keys(kana_romaji).includes(txt)) {
-       playSound(kana_romaji[txt]);
-     }
+    // Kana > BR > Romaji > Text
+    var txt = $(this).next().next().text();
+    playSound(txt);
   });
   document.getElementById("themeList").onchange = function() {
      setTheme(this.value);
